@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <ul class="nav-list">
-      <li><router-link :to="{ name: 'home' }" tag="a">首页</router-link></li>
-      <li><router-link :to="{ name: 'my' }" tag="a">我的</router-link></li>
-      <li><router-link :to="{ name: 'about' }" tag="a">关于</router-link></li>
-      <li><router-link :to="{ name: 'more' }" tag="a">更多</router-link></li>
-    </ul>
+    <!-- <div class="nav-list-container"> -->
+      <ul class="nav-list">
+        <li><router-link :to="{ name: 'home' }" tag="a">首页</router-link></li>
+        <li><router-link :to="{ name: 'my' }" tag="a">我的</router-link></li>
+        <li><router-link :to="{ name: 'about' }" tag="a">关于</router-link></li>
+        <li><router-link :to="{ name: 'more' }" tag="a">更多</router-link></li>
+      </ul>
+    <!-- </div> -->
     <!-- 渲染视图 -->
     <router-view name="default"></router-view>
     <router-view name="describe"></router-view>
+    <router-view name="music-list"></router-view>
   </div>
-    
 </template>
 
 <script>
@@ -19,12 +21,12 @@ export default {
 };
 </script>
 <style>
-
 #app {
   position: relative;
 }
 .nav-list {
   position: absolute;
+  z-index: 999;
   list-style: none;
   margin: 0;
   right: 7rem;
@@ -38,6 +40,4 @@ export default {
   color: white;
   font-weight: bold;
 }
-
-
 </style>

@@ -9,6 +9,7 @@ body {
   background-image: url('/static/imgs/bg_1.jpeg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  /* overflow: hidden; */
 }
 
 .nav-list {
