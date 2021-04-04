@@ -1,42 +1,32 @@
 <template>
   <div class="category-music-list-container">
-    <table border="1">
+    <table id="table" border="1">
       <tr>
         <th v-for="item of title" :key="item.id">{{ item.text }}</th>
       </tr>
       <!-- ================================================================ -->
-
-      <tr>
-        <td>
-          <p></p>
-        </td>
-
-        <td>
-          <p>这是音乐</p>
-        </td>
-
-        <td>
-          <p>这是音乐</p>
-        </td>
-        <td>
-          <p>这是音乐</p>
-        </td>
-        <td>
-          <p>这是音乐</p>
-        </td>
-        <td>
-          <p>这是音乐</p>
-        </td>
-        <td>
-          <p>这是音乐</p>
-        </td>
+      <!-- {{musicList.songs[0].ar[0].name}} -->
+      <tr v-for="(song, index) of musicList.songs" :key="song.id">
+        <td>{{index + 1}}</td>
+        <td>no operating</td>
+        <td>{{song.name}}</td>
+        <td>{{song.ar[0].name}}</td>
+        <td>{{song.al.name}}</td>
+        <td>{{formatDuration(song.dt)}}</td>
+        <td>{{formatDate(song.publishTime)}}</td>
       </tr>
+      <!-- musicList.songs[0].name 是歌曲名 -->
+      <!-- musicList.songs[0].ar[0].name 是作者名 -->
+      <!-- musicList.songs[0].al.name 是专辑名 -->
+      <!-- musicList.songs[0].dt 是时长 毫秒 -->
+      <!-- musicList.songs[0].publishTime 是发行时间 -->
     </table>
   </div>
 </template>
 
 <script>
-export default {
+import musicList from "../js/data";
+ const vm = {
   name: "",
   data() {
     return {
@@ -47,13 +37,40 @@ export default {
         { id: 3, text: "歌手" },
         { id: 4, text: "专辑" },
         { id: 5, text: "时长" },
-        { id: 6, text: "热度" },
+        { id: 6, text: "发行时间" },
       ],
+      musicList,
     };
   },
   components: {},
+  // mounted() {
+  //   console.log(this.$route.query);
+  // }
+  beforeRouteEnter (to, from, next) {
+    let id = to.query.playlistId;
+    // FIXME 后期更改为网络请求
+    // vm是组件实例， 因为无法获取this, 通过回调执行
+    next(vm => {
+      // 给data赋值
+      console.log(vm.musicList);
+    });
+  },
+  methods: {
+    formatDate(timestamp) {
+      return new Date(timestamp).toISOString().slice(0, 10);
+    },
+    formatDuration(dt) {
+      let second = Math.floor(dt / 1000);
+      let minute = Math.floor(second / 60);
+      second = second % 60;
+      minute = minute > 9 ? minute: '0' + minute;
+      second = second > 9 ? second: '0' + second;
+      return `${minute}:${second}`;
+    }
+  }
 };
-</script>
+export default vm;
+</script> 
 
 <style scpoed>
 p {
@@ -64,9 +81,27 @@ p {
   top: 5rem;
   display: flex;
   justify-content: center;
+  max-height: 30rem;
+  overflow-x: hidden;
+}
+.category-music-list-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background-color:  #ffffff38;
+  backdrop-filter: blur(5px);
 }
 .category-music-list-container table {
   text-align: center;
-  width: 100vw;
+  max-width: 100vw;
+}
+
+#table td {
+  /* TODO  添加td的max-width 超过长度后文本截断*/
+  color: white;
 }
 </style>

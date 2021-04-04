@@ -1061,8 +1061,7 @@ export default {
   },
   methods: {
     goToMusicList(id) {
-      this.$router.push({name: 'music'});
-      console.log(id);
+      this.$router.push({name: 'music', query: {playlistId: id}});
     }
   },
   components: {},
