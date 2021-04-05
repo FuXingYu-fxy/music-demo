@@ -8,6 +8,7 @@
         <!-- ================================================================ -->
         <!-- {{musicList.songs[0].ar[0].name}} -->
         <tr v-for="(song, index) of musicList.songs" :key="song.id">
+          <!-- TODO 用nth:child(odd)给表格间隔换色 -->
           <td>{{ index + 1 }}</td>
           <td>no operating</td>
           <!-- TODO 给音乐加上别名, 对应字段 song.alai -->

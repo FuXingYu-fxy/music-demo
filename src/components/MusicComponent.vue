@@ -21,8 +21,8 @@
    },
    computed: {
      isNotAppHome() {
-       // 首页不显示, 一定要加括号！！！！
-       return ! (this.$route.path === '/');
+       // 首页不显示, 一定要加括号！！！！ 优先级原因
+       return !(this.$route.path === '/');
      }
    },
    components: {
