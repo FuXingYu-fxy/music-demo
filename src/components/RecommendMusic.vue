@@ -3,7 +3,8 @@
     <div v-for="music of musicList" :key="music.id" class="music-item">
       <a @click="goToMusicList(music.id)">
         <img :src="music.picUrl" alt="">
-        <p>{{ music.name }}</p>
+        <p class="mask">{{ music.copywriter}}</p>
+        <p>{{ music.name}}</p>
       </a>
     </div>
   </div>
@@ -1073,10 +1074,10 @@ export default {
   display: grid;
   /* grid-template-rows: repeat(4, 7.5rem); */
   grid-template-rows: auto;
-  grid-template-columns:  repeat(10, 7.5rem);
+  grid-template-columns:  repeat(8, 9rem);
   gap: 1rem 0;
   justify-items: center;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   max-height: 14rem;
   overflow-x: hidden;
@@ -1089,12 +1090,21 @@ export default {
 .music-item > a {
   cursor: pointer;
 }
-.music-item > a p {
+.mask {
+  opacity: 0;
+  transition: .5s ease-out .2s;
+}
+.music-item > a:hover > p:nth-child(2) {
+  opacity: 1;
+}
+.music-item > a p:nth-child(2) {
   position: absolute;
   z-index: 1;
   font-size: 8px;
-  margin: 0 .31rem;
+  margin: 0;
   top: 0;
+  text-align: center;
+  min-width: 100%;
   background: #00000047;
   color: white;
 }

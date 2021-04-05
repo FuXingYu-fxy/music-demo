@@ -1,27 +1,34 @@
 <template>
   <div id="app">
     <!-- <div class="nav-list-container"> -->
-      <ul class="nav-list">
-        <li><router-link :to="{ name: 'home' }" tag="a">首页</router-link></li>
-        <li><router-link :to="{ name: 'my' }" tag="a">我的</router-link></li>
-        <li><router-link :to="{ name: 'about' }" tag="a">关于</router-link></li>
-        <li><router-link :to="{ name: 'more' }" tag="a">更多</router-link></li>
-      </ul>
+    <ul class="nav-list">
+      <li><router-link :to="{ name: 'home' }" tag="a">首页</router-link></li>
+      <li><router-link :to="{ name: 'my' }" tag="a">我的</router-link></li>
+      <li><router-link :to="{ name: 'about' }" tag="a">关于</router-link></li>
+      <li><router-link :to="{ name: 'more' }" tag="a">更多</router-link></li>
+    </ul>
     <!-- </div> -->
     <!-- 渲染视图 -->
-    <router-view name="default"></router-view>
+    <keep-alive>
+      <router-view name="default"></router-view>
+    </keep-alive>
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
+    <!-- <music-component/> -->
   </div>
 </template>
 
 <script>
+// import MusicComponent from './components/MusicComponent.vue';
 export default {
   name: "App",
+  components: {
+    // MusicComponent
+  },
 };
 </script>
 <style>
-#app {
+# MusicComponentapp {
   position: relative;
 }
 .nav-list {
