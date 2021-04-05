@@ -9,26 +9,35 @@
     </ul>
     <!-- </div> -->
     <!-- 渲染视图 -->
-    <keep-alive>
-      <router-view name="default"></router-view>
-    </keep-alive>
+    <router-view name="default"></router-view>
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
-    <!-- <music-component/> -->
+    <music-component :musicurl="currentMusicUrl"/>
   </div>
 </template>
 
 <script>
-// import MusicComponent from './components/MusicComponent.vue';
+import MusicComponent from './components/MusicComponent.vue';
 export default {
   name: "App",
   components: {
-    // MusicComponent
+    MusicComponent
   },
+  data() {
+    return {
+      currentMusicUrl: "#",
+    }
+  },
+  computed: {
+    // isNotAppHome() {
+    //   // 首页不显示播放框
+    //   return !this.$route.path === '/';
+    // }
+  }
 };
 </script>
 <style>
-# MusicComponentapp {
+#app {
   position: relative;
 }
 .nav-list {

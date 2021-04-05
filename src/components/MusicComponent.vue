@@ -1,6 +1,6 @@
 <template>
- <div class="music-component">
-   <audio :src="musicurl" controls autoplay="true" :loop="isLoop"></audio>
+ <div class="music-component" v-show="isNotAppHome">
+   <audio :src="musicurl" controls autoplay="true" :loop="isLoop" ></audio>
  </div>
 </template>
 
@@ -17,6 +17,12 @@
    data () {
      return {
        isLoop: true
+     }
+   },
+   computed: {
+     isNotAppHome() {
+       // 首页不显示, 一定要加括号！！！！
+       return ! (this.$route.path === '/');
      }
    },
    components: {

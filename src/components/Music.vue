@@ -30,7 +30,7 @@
       </table>
     </div>
     <!-- <keep-alive> -->
-      <music-component :musicurl="currentMusicUrl" />
+      <!-- <music-component :musicurl="currentMusicUrl" /> -->
       <!-- // 转移到主路由 -->
     <!-- </keep-alive> -->
   </div>
@@ -38,7 +38,7 @@
 
 <script>
 import musicList from "../js/data";
-import MusicComponent from "./MusicComponent";
+// import MusicComponent from "./MusicComponent";
 const vm = {
   name: "",
   data() {
@@ -57,7 +57,7 @@ const vm = {
     };
   },
   components: {
-    MusicComponent,
+    // MusicComponent,
   },
   // mounted() {
   //   console.log(this.$route.query);
@@ -74,8 +74,10 @@ const vm = {
   },
   methods: {
     selectMusic(musicId, titleName) {
-      this.currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+      // this.currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
       document.title = titleName;
+      this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+      // console.log(this.$root.$children[0].currentMusicUrl);
     },
     formatDate(timestamp) {
       return new Date(timestamp).toISOString().slice(0, 10);
