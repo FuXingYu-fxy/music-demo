@@ -9,16 +9,18 @@ const About = () => import('@/components/About.vue');
 const More = () => import('@/components/More.vue');
 const Describe = () => import('@/components/Describe.vue');
 const Music = () => import('@/components/Music.vue');
+const UserFavoriteMusic = () => import('@/components/UserFavoriteMusic');
+const TodayRecommend = () => import('@/components/TodayRecommend');
 
 let routes = [
   {
     path: '/',
-    components: {describe: Describe},
+    components: { describe: Describe },
   },
   {
     path: '/music',
     name: 'music',
-    components: {default: Music}
+    components: { default: Music }
   },
   {
     path: '/home',
@@ -28,8 +30,24 @@ let routes = [
   },
   {
     path: '/my',
-    name: 'my',
-    component: My
+    // name: 'my',  // 当父级路由嵌套有默认子路由时，不能使用 name 进行导航，使用path 或者删掉name
+    component: My,
+    children: [
+      {
+        // 默认子路由
+        path: '',
+        components: {
+          'today-recommend': TodayRecommend,
+        }
+      },
+      {
+        path: ':id',
+        components: {
+          'favorite-playlist': UserFavoriteMusic
+        }
+      }
+    ]
+
   },
   {
     path: '/about',

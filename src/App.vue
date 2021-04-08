@@ -2,10 +2,10 @@
   <div id="app">
     <!-- <div class="nav-list-container"> -->
     <ul class="nav-list">
-      <li><router-link :to="{ name: 'home' }" tag="a">首页</router-link></li>
-      <li><router-link :to="{ name: 'my' }" tag="a">我的</router-link></li>
-      <li><router-link :to="{ name: 'about' }" tag="a">关于</router-link></li>
-      <li><router-link :to="{ name: 'more' }" tag="a">更多</router-link></li>
+      <li><router-link :to="{ path: '/home' }" tag="a">首页</router-link></li>
+      <li><router-link :to="{ path: '/my' }" tag="a">我的</router-link></li>
+      <li><router-link :to="{ path: '/about' }" tag="a">关于</router-link></li>
+      <li><router-link :to="{ path: '/more' }" tag="a">更多</router-link></li>
     </ul>
     <!-- </div> -->
     <!-- 渲染视图 -->

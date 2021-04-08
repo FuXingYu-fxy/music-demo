@@ -18,27 +18,37 @@
       </div>
       <!-- 用户最喜爱的音乐列表 -->
       <div class="user-favorite">
-        <div class="playlist" v-for="music of userPlaylist.playlist" :key="music.id">
-          <img class="cover-img" :src="music.coverImgUrl" alt="用户歌单图片">
-          <p class="playlist-title">{{music.name}}</p>
+        <div
+          class="playlist"
+          v-for="music of userPlaylist.playlist"
+          :key="music.id"
+        >
+          <a class="playlist-link"
+             @click="goToDetailsPlaylist(music.id)"
+            ><img
+              class="cover-img"
+              :src="music.coverImgUrl"
+              alt="用户歌单图片"
+            />
+            <p class="playlist-title">{{ music.name }}</p>
+          </a>
         </div>
       </div>
     </div>
     <div class="user-recommended-today">
-      <div class="today-music">
-        <p class="today-recommended-text">今日推荐</p>
-        <table>
-          <tr v-for="music of dailySongs.data.dailySongs" :key="music.id">
-            <td>
-              <a
-                class="music-name-link"
-                @click="selectMusic(music.id, music.name)"
-                >{{ music.name }}</a
-              >
-            </td>
-          </tr>
-        </table>
-      </div>
+
+      <router-view
+        name="today-recommend"
+        :daily-songs='dailySongs'
+      ></router-view>
+
+      <router-view
+        name="favorite-playlist"
+        :favorite-song-ids='favoriteSongIds'
+        :playlist-title='playlistTitle'
+      >
+
+      </router-view>
     </div>
 
     <div class="lyrics-container">
@@ -55,20 +65,44 @@
 
 <script>
 import { userInfo, dailySongs } from "../js/daily.js";
+import global from "../js/global.js";
 const vm = {
   name: "",
   data() {
     return {
       userInfo,
-      dailySongs,
-      userPlaylist: null,
+      userPlaylist: [],
+      // TODO 更换为网络请求
+      dailySongs, // 今日推荐的歌曲
+      playlistTitle: '',
+      favoriteSongIds: [], // 用户喜爱歌单的歌曲id
     };
   },
   methods: {
-    selectMusic(musicId, titleName) {
-      document.title = '正在播放  ' + titleName;
-      this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
-    },
+    goToDetailsPlaylist(playlistId) {
+      // 获取歌单详情
+      let url = `${global.server}/playlist/detail?id=${playlistId}`;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Origin: 'http://localhost:8080',
+        },
+        credentials: 'include'
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(result => {
+        // result 是 playlist json数据， 只有 result.playlist.trackIds才是完成的歌曲数据
+        this.playlistTitle = result.playlist.name;
+        let trackIds = result.playlist.trackIds.map(item => item.id);
+        this.favoriteSongIds = trackIds; // 把歌曲id发给组件，让组件自己去请求
+        this.$router.push(`/my/${playlistId}`);
+      })
+      .catch(reason => {
+        alert('用户状态异常');
+      })
+    }
   },
   computed: {
     showLyrics() {
@@ -86,26 +120,26 @@ const vm = {
     fetch("http://localhost:3000/user/playlist?uid=245947021", {
       method: "GET",
       headers: {
-        'Origin': "http://localhost:8080",
+        Origin: "http://localhost:8080",
       },
       credentials: "include",
     })
-    .then(response => {
-      // xxx.json()返回的是一个 Promise
-      return response.json();
-    })
-    .then(result => {
-      next(vm => {
-        vm.userPlaylist = result;
+      .then((response) => {
+        // xxx.json()返回的是一个 Promise
+        return response.json();
+      })
+      .then((result) => {
+        next((vm) => {
+          vm.userPlaylist = result;
+          console.log("成功");
+        });
+      })
+      .catch((reason) => {
+        alert("登陆状态异常!");
       });
-    })
-    .catch(reason => {
-      alert("登陆状态异常!");
-    })
   },
   // TODO 后期在这里加上登陆验证,
 };
-
 
 export default vm;
 </script>
@@ -154,7 +188,7 @@ export default vm;
   max-height: 21.875rem;
   background-color: rgba(255, 255, 255, 0.151);
   backdrop-filter: blur(2px);
-  overflow: auto;
+  overflow: hidden auto;
 }
 /* 用户歌单 */
 .playlist {
@@ -164,7 +198,13 @@ export default vm;
   z-index: 2;
   cursor: pointer;
 }
-.playlist:hover > .playlist-title {
+.playlist-link {
+  display: block;
+  height: inherit;
+  width: inherit;
+
+}
+.playlist-link:hover > .playlist-title {
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.459);
 }
@@ -182,20 +222,19 @@ export default vm;
   overflow: hidden;
   color: white;
   opacity: 0;
-  transition: .45s ease-in;
-  font-size: .8rem;
+  transition: 0.45s ease-in;
+  font-size: 0.8rem;
 }
 
-
 /* 今日推荐部分 */
-.today-recommended-text {
+/* .today-recommended-text {
   position: sticky;
   top: 0.5px;
   background-color: white;
-}
+} */
 .user-recommended-today {
   margin-left: 8rem;
-  max-height: 30rem;
+  height: 30rem;
   overflow-x: hidden;
   background-color: #ffffff33;
   backdrop-filter: blur(8px);
