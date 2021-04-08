@@ -3,7 +3,7 @@
     <!-- 给user-page-container一个弹性布局 -->
     <div class="user-info-areas">
       <div class="user-info">
-        <!-- user-info也是flex -->
+        <!-- user-info内也是flex -->
         <!-- 用户头像 -->
         <div class="user-avatar-container">
           <a href="#"
@@ -18,11 +18,10 @@
       </div>
       <!-- 用户最喜爱的音乐列表 -->
       <div class="user-favorite">
-        <div class="music-placeholder">音乐占位</div>
-        <div class="music-placeholder">音乐占位</div>
-        <div class="music-placeholder">音乐占位</div>
-        <div class="music-placeholder">音乐占位</div>
-        <div class="music-placeholder">音乐占位</div>
+        <div class="playlist" v-for="music of userPlaylist.playlist" :key="music.id">
+          <img class="cover-img" :src="music.coverImgUrl" alt="用户歌单图片">
+          <p class="playlist-title">{{music.name}}</p>
+        </div>
       </div>
     </div>
     <div class="user-recommended-today">
@@ -56,17 +55,18 @@
 
 <script>
 import { userInfo, dailySongs } from "../js/daily.js";
-export default {
+const vm = {
   name: "",
   data() {
     return {
       userInfo,
       dailySongs,
+      userPlaylist: null,
     };
   },
   methods: {
     selectMusic(musicId, titleName) {
-      document.title = titleName;
+      document.title = '正在播放  ' + titleName;
       this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
     },
   },
@@ -82,14 +82,37 @@ export default {
     },
   },
   components: {},
-  //  beforeRouteEnter (to, from, next) {
-  //  }
-  // TODO 后期在这里加上登陆验证
+  beforeRouteEnter(to, from, next) {
+    fetch("http://localhost:3000/user/playlist?uid=245947021", {
+      method: "GET",
+      headers: {
+        'Origin': "http://localhost:8080",
+      },
+      credentials: "include",
+    })
+    .then(response => {
+      // xxx.json()返回的是一个 Promise
+      return response.json();
+    })
+    .then(result => {
+      next(vm => {
+        vm.userPlaylist = result;
+      });
+    })
+    .catch(reason => {
+      alert("登陆状态异常!");
+    })
+  },
+  // TODO 后期在这里加上登陆验证,
 };
+
+
+export default vm;
 </script>
+
 <style scpoed>
 .user-page-container {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   position: relative;
   top: 4rem;
   display: flex;
@@ -123,7 +146,46 @@ export default {
 }
 .user-favorite {
   margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 7rem);
+  grid-template-rows: auto;
+  gap: 2.5rem 0;
+  justify-items: center;
+  max-height: 21.875rem;
+  background-color: rgba(255, 255, 255, 0.151);
+  backdrop-filter: blur(2px);
+  overflow: auto;
 }
+/* 用户歌单 */
+.playlist {
+  width: 5rem;
+  height: 5rem;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+.playlist:hover > .playlist-title {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.459);
+}
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+.playlist-title {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  text-align: center;
+  width: inherit;
+  height: inherit;
+  overflow: hidden;
+  color: white;
+  opacity: 0;
+  transition: .45s ease-in;
+  font-size: .8rem;
+}
+
 
 /* 今日推荐部分 */
 .today-recommended-text {
