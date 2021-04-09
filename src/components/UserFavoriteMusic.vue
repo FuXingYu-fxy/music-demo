@@ -30,13 +30,13 @@ const vm = {
     playlistTitle: {
       type: String,
       required: true,
-      default: "",
+      default: "今日推荐",
     },
     dailySongIds: {
       type: Array,
       required: true,
       default() {
-        return [];
+        return ['初始值呢'];
       },
     },
   },
@@ -51,66 +51,63 @@ const vm = {
       document.title = "正在播放  " + titleName;
       this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
     },
-    getSongInfoByFetch(songIds) {
+    setSongInfoByFetch(songIds) {
       let url = `${global.server}/song/detail?ids=${songIds.join(",")}`;
-      debugger;
-      return fetch(url, {
+      // debugger;
+      let vm = this;
+      fetch(url, {
         method: "GET",
         headers: {
-          Origin: "http://localhost:8080",
+          Origin: 'http://localhost:8080'
         },
-        credentials: "include",
-      });
+        credentials: 'include'
+      })
+      .then(res => {
+        return res.json();
+      })
+      .then(result => this.musicList = result)
+      .catch(reason => console.log(reason));
     },
   },
-  beforeRouteUpdate(to, from, next) {
-    console.log(this.dailySongIds);
-    next();
-    // this.getSongInfoByFetch(this.favoriteSongIds)
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then((result) => {
-    //     this.musicList = result.songs;
-    //   })
-    //   .catch((reason) => {
-    //     console.log(reason);
-    //   });
-  },
-  mounted() {
-    // 初次进入时，默认显示今日推荐歌曲
-    // debugger;
-    console.log(this.dailySongIds);
-    // this.getSongInfoByFetch(this.dailySongIds)
-    //   .then((res) => {
-    //     console.log(1);
-    //     return res.json();
-    //   })
-    //   .then((result) => {
-    //     console.log(2);
-    //     this.musicList = result.songs;
-    //   })
-    //   .catch((reason) => {
-    //     console.log(3);
-    //     console.log(reason);
-    //   });
+  watch: {
+    favoriteSongIds(newValue) {
+      this.setSongInfoByFetch(newValue); // 或者 this.favoriteSongIds
+    },
+    // 因为父组件的值不知道何时传过来，所以在这里监听dailySongIds
+    dailySongIds(newValue, oldValue) {
+      console.log(newValue, oldValue);
+      this.setSongInfoByFetch(newValue);
+    }
   },
 };
 export default vm;
 </script>
 
 <style scpoed>
+.today-music {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: inherit;
+}
 .today-recommended-text {
   position: sticky;
   top: 0.5px;
   background-color: white;
   margin: 0;
-}
-.today-music {
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+td {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 20rem;
+}
+
 .music-name-link {
   cursor: pointer;
 }

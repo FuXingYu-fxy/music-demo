@@ -234,7 +234,8 @@ export default vm;
 .user-recommended-today {
   margin-left: 8rem;
   height: 30rem;
-  overflow-x: hidden;
+  width: 28rem;
+  overflow: hidden auto;
   background-color: #ffffff33;
   backdrop-filter: blur(8px);
 }
