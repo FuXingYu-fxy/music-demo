@@ -36,7 +36,7 @@ const vm = {
       type: Array,
       required: true,
       default() {
-        return ['初始值呢'];
+        return ["初始值呢"];
       },
     },
   },
@@ -58,15 +58,15 @@ const vm = {
       fetch(url, {
         method: "GET",
         headers: {
-          Origin: 'http://localhost:8080'
+          Origin: "http://localhost:8080",
         },
-        credentials: 'include'
+        credentials: "include",
       })
-      .then(res => {
-        return res.json();
-      })
-      .then(result => this.musicList = result)
-      .catch(reason => console.log(reason));
+        .then((res) => {
+          return res.json();
+        })
+        .then((result) => (this.musicList = result))
+        .catch((reason) => console.log(reason));
     },
   },
   watch: {
@@ -77,7 +77,7 @@ const vm = {
     dailySongIds(newValue, oldValue) {
       console.log(newValue, oldValue);
       this.setSongInfoByFetch(newValue);
-    }
+    },
   },
 };
 export default vm;
@@ -85,33 +85,27 @@ export default vm;
 
 <style scpoed>
 .today-music {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  position: relative;
+  width: 100%;
 }
 .today-recommended-text {
-  position: sticky;
-  top: 0.5px;
-  background-color: white;
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  color: white;
 }
 
-td {
+/* ==============重置table的样式================= */
+.today-music table,
+.today-music table tr {
   display: block;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 20rem;
+  width: 100%;
 }
-
-.music-name-link {
-  cursor: pointer;
-}
-
-.music-name-link:hover {
-  color: aquamarine;
+.today-music table tr td {
+    display: block;
+    min-width: 100px;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 </style>

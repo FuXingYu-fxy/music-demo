@@ -1,12 +1,13 @@
 <template>
   <div class="user-page-container">
-    <!-- 给user-page-container一个弹性布局 -->
+    <!-- 给user-page-container一个横向弹性布局 -->
     <div class="user-info-areas">
       <div class="user-info">
         <!-- user-info内也是flex -->
         <!-- 用户头像 -->
         <div class="user-avatar-container">
           <a href="#"
+            style="display:block"
             ><img
               class="user-avatar"
               :src="userInfo.profile.avatarUrl"
@@ -35,6 +36,7 @@
         </div>
       </div>
     </div>
+
     <div class="user-recommended-today">
 
       <router-view
@@ -144,135 +146,92 @@ export default vm;
 </script>
 
 <style scpoed>
-.user-page-container {
-  /* border: 1px solid red; */
-  position: relative;
+.user-page-container  {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.329);
-  backdrop-filter: blur(20px);
-  padding-top: 5%;
-  box-sizing: border-box;
+  justify-content: space-evenly;
 }
+/* 用户头像区域 */
 .user-info-areas {
   display: flex;
   flex-direction: column;
-}
-.music-placeholder {
-  width: 4rem;
-  height: 4rem;
-  border: 1px solid red;
-  box-sizing: border-box;
+  width: 25%;
 }
 .user-info {
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
-.user-info .nickname {
-  margin: 0 0 0 0.5rem;
+.nickname {
+  margin-left: 1%;
 }
 .user-avatar-container {
-  width: 5rem;
-  height: 5rem;
+  width: 20%;
 }
 .user-avatar {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
   border-radius: 50%;
 }
+
+/* =======================喜欢的歌单================================= */
 .user-favorite {
-  margin-top: 8%;
   display: grid;
-  grid-template-columns: repeat(3, 7rem);
   grid-template-rows: auto;
-  gap: 2.5rem 0;
-  justify-items: center;
-  max-height: 21.875rem;
-  background-color: rgba(255, 255, 255, 0.151);
-  backdrop-filter: blur(2px);
-  overflow: hidden auto;
+  grid-template-columns: repeat(3, 32%);
+  gap: 2%;
 }
-/* 用户歌单 */
+
+/* ===================歌单封面=================== */
 .playlist {
-  width: 5rem;
-  height: 5rem;
-  position: relative;
-  z-index: 2;
-  cursor: pointer;
+  /* width: 5%; */
 }
 .playlist-link {
   display: block;
-  height: inherit;
-  width: inherit;
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.playlist-title {
+  /* 歌单的描述性文字 */
+  position: absolute;
+  top: 0;
+  text-decoration: none;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  color: white;
 
+  height: 100%;
+  color: white;
+  overflow: hidden;
+  transition: .6s;
+  background-color: #4a4a4a78;
+  font-size: .5rem;
 }
 .playlist-link:hover > .playlist-title {
-  background-color: initial;
-  /* opacity: 0; */
   height: 0;
 }
 .cover-img {
   width: 100%;
   height: 100%;
 }
-.playlist-title {
-  position: absolute;
-  top: 0;
-  margin: 0;
-  text-align: center;
-  width: inherit;
-  height: inherit;
-  overflow: hidden;
-  color: white;
-  transition: 0.45s ease-in;
-  font-size: 0.8rem;
-  /* opacity: 1; */
-  background-color: rgba(0, 0, 0, 0.459);
-}
 
-/* 今日推荐部分 */
-/* .today-recommended-text {
-  position: sticky;
-  top: 0.5px;
-  background-color: white;
-} */
+/* =======================推荐歌曲的最外层div======================= */
 .user-recommended-today {
-  margin-left: 1rem;
-  height: 30rem;
-  /* width: 28rem; */
-  overflow: hidden auto;
-  background-color: #ffffff33;
-  backdrop-filter: blur(8px);
+  width: 25%;
 }
-.user-recommended-today::-webkit-scrollbar {
-  /* 隐藏滚动条但是页面还能滚动 */
-  display: none;
+.today-music {
+  width: 100%;
+  /* 今日推荐会根据这个来定位 */
+  position: relative;  
 }
-
-.music-name-link {
-  cursor: pointer;
+.today-recommended-text {
+  margin: 0;
+  position: sticky;
+  top: 0;
+  color: white;
 }
 
-.music-name-link:hover {
-  color: aquamarine;
-}
-/* 歌词部分 */
-.lyrics-section {
-  text-align: center;
-  max-height: 28rem;
-  overflow: auto;
-  background-color: #ffffff33;
-  backdrop-filter: blur(8px);
-  margin: 2rem 2rem 0 2rem;
-  padding: 2px;
-  box-sizing: border-box;
-}
-.lyrics-section::-webkit-scrollbar {
-  /* 隐藏滚动条但是页面还能滚动 */
-  display: none;
-}
-.lyrics-section li {
-  list-style: none;
-}
+
 </style>
