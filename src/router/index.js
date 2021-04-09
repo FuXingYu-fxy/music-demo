@@ -10,7 +10,6 @@ const More = () => import('@/components/More.vue');
 const Describe = () => import('@/components/Describe.vue');
 const Music = () => import('@/components/Music.vue');
 const UserFavoriteMusic = () => import('@/components/UserFavoriteMusic');
-const TodayRecommend = () => import('@/components/TodayRecommend');
 
 let routes = [
   {
@@ -34,17 +33,18 @@ let routes = [
     component: My,
     children: [
       {
-        // 默认子路由
+        // 进入时重定向至 今日推荐
         path: '',
-        components: {
-          'today-recommend': TodayRecommend,
-        }
+        redirect: 'todayrecommend'
+      },
+      {
+        // 默认子路由
+        path: 'todayrecommend',
+        component: UserFavoriteMusic
       },
       {
         path: ':id',
-        components: {
-          'favorite-playlist': UserFavoriteMusic
-        }
+        component: UserFavoriteMusic
       }
     ]
 

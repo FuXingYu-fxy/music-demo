@@ -32,6 +32,13 @@ const vm = {
       required: true,
       default: "",
     },
+    dailySongIds: {
+      type: Array,
+      required: true,
+      default() {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -44,27 +51,50 @@ const vm = {
       document.title = "正在播放  " + titleName;
       this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
     },
+    getSongInfoByFetch(songIds) {
+      let url = `${global.server}/song/detail?ids=${songIds.join(",")}`;
+      debugger;
+      return fetch(url, {
+        method: "GET",
+        headers: {
+          Origin: "http://localhost:8080",
+        },
+        credentials: "include",
+      });
+    },
   },
   beforeRouteUpdate(to, from, next) {
-    let url = `${global.server}/song/detail?ids=${this.favoriteSongIds.join(",")}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        Origin: "http://localhost:8080",
-      },
-      credentials: "include",
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((result) => {
-        this.musicList = result;
-      })
-      .catch((reason) => {
-        console.log(reason);
-      });
+    console.log(this.dailySongIds);
+    next();
+    // this.getSongInfoByFetch(this.favoriteSongIds)
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then((result) => {
+    //     this.musicList = result.songs;
+    //   })
+    //   .catch((reason) => {
+    //     console.log(reason);
+    //   });
   },
-  mounted() {},
+  mounted() {
+    // 初次进入时，默认显示今日推荐歌曲
+    // debugger;
+    console.log(this.dailySongIds);
+    // this.getSongInfoByFetch(this.dailySongIds)
+    //   .then((res) => {
+    //     console.log(1);
+    //     return res.json();
+    //   })
+    //   .then((result) => {
+    //     console.log(2);
+    //     this.musicList = result.songs;
+    //   })
+    //   .catch((reason) => {
+    //     console.log(3);
+    //     console.log(reason);
+    //   });
+  },
 };
 export default vm;
 </script>

@@ -38,16 +38,10 @@
     <div class="user-recommended-today">
 
       <router-view
-        name="today-recommend"
-        :daily-songs='dailySongs'
-      ></router-view>
-
-      <router-view
-        name="favorite-playlist"
         :favorite-song-ids='favoriteSongIds'
         :playlist-title='playlistTitle'
+        :daily-song-ids='dailySongIds'
       >
-
       </router-view>
     </div>
 
@@ -73,8 +67,8 @@ const vm = {
       userInfo,
       userPlaylist: [],
       // TODO 更换为网络请求
-      dailySongs, // 今日推荐的歌曲
-      playlistTitle: '',
+      dailySongIds:[], // 今日推荐的歌曲
+      playlistTitle: '今日推荐',
       favoriteSongIds: [], // 用户喜爱歌单的歌曲id
     };
   },
@@ -117,6 +111,7 @@ const vm = {
   },
   components: {},
   beforeRouteEnter(to, from, next) {
+    // 请求用户数据
     fetch("http://localhost:3000/user/playlist?uid=245947021", {
       method: "GET",
       headers: {
@@ -131,7 +126,11 @@ const vm = {
       .then((result) => {
         next((vm) => {
           vm.userPlaylist = result;
-          console.log("成功");
+          // TODO 后期这里再请求一个今日推荐歌曲 /recommend/songs 替换掉dailySongs
+          let dailySongIds = dailySongs.data.dailySongs.map(item => item.id);
+          // debugger;
+          vm.dailySongIds = dailySongIds;
+          console.log("请求用户数据成功");
         });
       })
       .catch((reason) => {
