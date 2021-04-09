@@ -1062,6 +1062,7 @@ export default {
   },
   methods: {
     goToMusicList(id) {
+      // TODO 后期加上网络请求
       this.$router.push({name: 'music', query: {playlistId: id}});
     }
   },
@@ -1074,21 +1075,22 @@ export default {
   display: grid;
   /* grid-template-rows: repeat(4, 7.5rem); */
   grid-template-rows: auto;
-  grid-template-columns:  repeat(8, 9rem);
+  grid-template-columns:  repeat(8, 12.5%);
   gap: 1rem 0;
   justify-items: center;
   align-items: flex-start;
   justify-content: center;
-  max-height: 14rem;
+  max-height: calc(100% - 34px);
   overflow-x: hidden;
 }
 .music-item {
-  width: 6.25rem;
-  height: 6.25remx;
+  width: 70%;
+  height: 45.5%;
   position: relative;
 }
 .music-item > a {
   cursor: pointer;
+  display: block;
 }
 .mask {
   opacity: 0;
@@ -1104,12 +1106,16 @@ export default {
   margin: 0;
   top: 0;
   text-align: center;
-  min-width: 100%;
+  width: 100%;
   background: #00000047;
   color: white;
+}
+.music-item > a p:nth-child(3) {
+  font-size: 100%;
 }
 .music-item img {
   height: 100%;
   width: 100%;
 }
+
 </style>

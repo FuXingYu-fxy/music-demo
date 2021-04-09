@@ -147,9 +147,13 @@ export default vm;
 .user-page-container {
   /* border: 1px solid red; */
   position: relative;
-  top: 4rem;
   display: flex;
   flex-direction: row;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.329);
+  backdrop-filter: blur(20px);
+  padding-top: 5%;
+  box-sizing: border-box;
 }
 .user-info-areas {
   display: flex;
@@ -178,7 +182,7 @@ export default vm;
   border-radius: 50%;
 }
 .user-favorite {
-  margin-top: 2rem;
+  margin-top: 8%;
   display: grid;
   grid-template-columns: repeat(3, 7rem);
   grid-template-rows: auto;
@@ -204,8 +208,9 @@ export default vm;
 
 }
 .playlist-link:hover > .playlist-title {
-  opacity: 1;
-  background-color: rgba(0, 0, 0, 0.459);
+  background-color: initial;
+  /* opacity: 0; */
+  height: 0;
 }
 .cover-img {
   width: 100%;
@@ -220,9 +225,10 @@ export default vm;
   height: inherit;
   overflow: hidden;
   color: white;
-  opacity: 0;
   transition: 0.45s ease-in;
   font-size: 0.8rem;
+  /* opacity: 1; */
+  background-color: rgba(0, 0, 0, 0.459);
 }
 
 /* 今日推荐部分 */
@@ -232,9 +238,9 @@ export default vm;
   background-color: white;
 } */
 .user-recommended-today {
-  margin-left: 8rem;
+  margin-left: 1rem;
   height: 30rem;
-  width: 28rem;
+  /* width: 28rem; */
   overflow: hidden auto;
   background-color: #ffffff33;
   backdrop-filter: blur(8px);
@@ -259,6 +265,8 @@ export default vm;
   background-color: #ffffff33;
   backdrop-filter: blur(8px);
   margin: 2rem 2rem 0 2rem;
+  padding: 2px;
+  box-sizing: border-box;
 }
 .lyrics-section::-webkit-scrollbar {
   /* 隐藏滚动条但是页面还能滚动 */

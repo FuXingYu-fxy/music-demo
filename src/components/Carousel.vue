@@ -21,8 +21,8 @@
 <style scpoed>
   .carousel {
     text-align: center;
-    height: 10rem;
-    width: 50rem;
+    height: 100%;
+    width: 100%;
     border: 1px solid coral;
   }
  

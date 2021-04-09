@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <div class="category-music-list-container">
-      <table id="table" border="1">
+      <table id="table">
         <tr>
           <th v-for="item of title" :key="item.id">{{ item.text }}</th>
         </tr>
@@ -31,8 +31,8 @@
       </table>
     </div>
     <!-- <keep-alive> -->
-      <!-- <music-component :musicurl="currentMusicUrl" /> -->
-      <!-- // 转移到主路由 -->
+    <!-- <music-component :musicurl="currentMusicUrl" /> -->
+    <!-- // 转移到主路由 -->
     <!-- </keep-alive> -->
   </div>
 </template>
@@ -97,31 +97,30 @@ export default vm;
 </script> 
 
 <style scpoed>
+.container {
+  width: 100vw;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.226);
+  backdrop-filter: blur(20px);
+}
 p {
   margin: 0 0 0.625rem 0;
 }
 .category-music-list-container {
   position: relative;
-  top: 5rem;
+  top: 12%;
   display: flex;
-  justify-content: center;
-  max-height: 28rem;
-  overflow-x: hidden;
+  justify-content: left;
+  max-height: 78%;
+  overflow: auto;
 }
-.category-music-list-container::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-  background-color: #ffffff38;
-  backdrop-filter: blur(5px);
-}
-.category-music-list-container table {
+
+#table {
   text-align: center;
-  max-width: 100vw;
+  width: 100%;
+}
+td,th {
+  min-width: 100px;
 }
 
 #table td {
@@ -135,5 +134,4 @@ p {
 .music-name:hover {
   color: #79fccc;
 }
-
 </style>

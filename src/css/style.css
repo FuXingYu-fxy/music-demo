@@ -12,5 +12,12 @@ body {
   /* overflow: hidden; */
 }
 
-.nav-list {
-}
+
+/* 最大宽度为650px 时，也就是宽度 <= 650px时，应用以下样式 */
+/* @media screen and (max-width: 650px) {
+  body {
+    width: 100%;
+    background: #47e2f5;
+  }
+  
+} */

@@ -86,9 +86,8 @@ export default vm;
 <style scpoed>
 .today-music {
   text-overflow: ellipsis;
-  overflow: hidden;
   white-space: nowrap;
-  width: inherit;
+  position: relative;
 }
 .today-recommended-text {
   position: sticky;

@@ -39,13 +39,14 @@ export default {
 <style>
 #app {
   position: relative;
+  height: 100vh;
 }
 .nav-list {
   position: absolute;
   z-index: 999;
   list-style: none;
   margin: 0;
-  right: 7rem;
+  right: 10%;
 }
 .nav-list li {
   display: inline-block;
