@@ -89,7 +89,7 @@ const vm = {
         return response.json();
       })
       .then(result => {
-        // result 是 playlist json数据， 只有 result.playlist.trackIds才是完成的歌曲数据
+        // result 是 playlist json数据， 只有 result.playlist.trackIds才是完整的歌曲数据
         this.playlistTitle = result.playlist.name;
         let trackIds = result.playlist.trackIds.map(item => item.id);
         this.favoriteSongIds = trackIds; // 把歌曲id发给组件，让组件自己去请求
@@ -164,7 +164,7 @@ export default vm;
 
 
 .user-page-container > div {
-  max-height: 85%;
+  max-height: 75%;
   overflow: auto;
 }
 .user-page-container > div::-webkit-scrollbar {

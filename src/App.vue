@@ -12,7 +12,8 @@
     <router-view name="default"></router-view>
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
-    <music-component :musicurl="currentMusicUrl"/>
+    <!-- 音乐播放条组件 -->
+    <music-component :music-info='musicInfo'/>
   </div>
 </template>
 
@@ -25,7 +26,7 @@ export default {
   },
   data() {
     return {
-      currentMusicUrl: "#",
+      musicInfo: {},
     }
   },
   computed: {

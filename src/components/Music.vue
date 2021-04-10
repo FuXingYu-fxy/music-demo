@@ -13,7 +13,7 @@
           <td>no operating</td>
           <!-- TODO 给音乐加上别名, 对应字段 song.alai -->
           <td>
-            <a class="music-name" @click="selectMusic(song.id, song.name)">{{
+            <a class="music-name" @click="selectMusic(song)">{{
               song.name
             }}</a>
           </td>
@@ -39,6 +39,7 @@
 
 <script>
 import musicList from "../js/data";
+import utils from '../js/utils';
 // import MusicComponent from "./MusicComponent";
 const vm = {
   name: "",
@@ -74,23 +75,13 @@ const vm = {
     });
   },
   methods: {
-    selectMusic(musicId, titleName) {
-      // this.currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
-      document.title = titleName;
-      this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
-      // console.log(this.$root.$children[0].currentMusicUrl);
+    selectMusic(musicInfo) {
+      this.$root.$children[0].musicInfo = musicInfo;
     },
     formatDate(timestamp) {
       return new Date(timestamp).toISOString().slice(0, 10);
     },
-    formatDuration(dt) {
-      let second = Math.floor(dt / 1000);
-      let minute = Math.floor(second / 60);
-      second = second % 60;
-      minute = minute > 9 ? minute : "0" + minute;
-      second = second > 9 ? second : "0" + second;
-      return `${minute}:${second}`;
-    },
+    formatDuration: utils.formatDuration,
   },
 };
 export default vm;

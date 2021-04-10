@@ -5,7 +5,7 @@
       <li v-for="music of musicList.songs" :key="music.id">
         <a 
         class="music-name-link" 
-        @click="selectMusic(music.id, music.name)" 
+        @click="selectMusic(music)" 
         >
         {{ music.name }}
         </a>
@@ -16,6 +16,7 @@
 
 <script>
 import global from "../js/global";
+import utils from "../js/utils";
 const vm = {
   name: "",
   props: {
@@ -46,36 +47,21 @@ const vm = {
   },
   components: {},
   methods: {
-    selectMusic(musicId, titleName) {
-      document.title = "正在播放  " + titleName;
-      this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+    selectMusic(musicInfo) {
+      // this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+      this.$root.$children[0].musicInfo = musicInfo;
     },
-    setSongInfoByFetch(songIds) {
-      let url = `${global.server}/song/detail?ids=${songIds.join(",")}`;
-      // debugger;
-      let vm = this;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          Origin: "http://localhost:8080",
-        },
-        credentials: "include",
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((result) => (this.musicList = result))
-        .catch((reason) => console.log(reason));
-    },
+    getSongInfoByFetch: utils.getSongInfoByFetch
   },
   watch: {
     favoriteSongIds(newValue) {
-      this.setSongInfoByFetch(newValue); // 或者 this.favoriteSongIds
+      this.getSongInfoByFetch(newValue)
+      .then(value => this.musicList = value); // 或者 this.favoriteSongIds
     },
     // 因为父组件的值不知道何时传过来，所以在这里监听dailySongIds
-    dailySongIds(newValue, oldValue) {
-      console.log(newValue, oldValue);
-      this.setSongInfoByFetch(newValue);
+    dailySongIds(newValue) {
+      this.getSongInfoByFetch(newValue)
+      .then(value => this.musicList = value);
     },
   },
 };
