@@ -150,17 +150,41 @@ export default vm;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  align-items: flex-start;
+  background-color: #ffffff38;
+  backdrop-filter: blur(20px);
+
+  /* 设置主屏幕高度 */
+  height: 100vh;
+  overflow: auto;
+
+  padding-top: 3%;
+  box-sizing: border-box;
+}
+
+
+.user-page-container > div {
+  max-height: 85%;
+  overflow: auto;
+}
+.user-page-container > div::-webkit-scrollbar {
+  display: none;
 }
 /* 用户头像区域 */
 .user-info-areas {
   display: flex;
   flex-direction: column;
   width: 25%;
+  position: inherit;
 }
 .user-info {
   display: flex;
   flex-direction: row;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: cadetblue;
 }
 .nickname {
   margin-left: 1%;
@@ -233,5 +257,28 @@ export default vm;
   color: white;
 }
 
+/* =====================调试的边框====================== */
+.user-info-areas {
+  box-sizing: border-box;
+  border: 1px solid red;
+}
+.user-recommended-today {
+  box-sizing: border-boxr;
+  border: 1px solid gold;
+}
+
+.lyrics-container {
+  border: 1px solid greenyellow;
+  box-sizing: border-box;
+}
+/* =====================调试的边框====================== */
+
+.lyrics-section {
+  text-align: center;
+  padding: 0;
+}
+.lyrics-section li{
+  list-style: none;
+}
 
 </style>

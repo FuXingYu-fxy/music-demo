@@ -1,17 +1,16 @@
 <template>
   <div class="today-music">
     <p class="today-recommended-text">{{ playlistTitle }}</p>
-    <table>
-      <tr v-for="music of musicList.songs" :key="music.id">
-        <td>
-          <a
-            class="music-name-link"
-            @click="selectMusic(music.id, music.name)"
-            >{{ music.name }}</a
-          >
-        </td>
-      </tr>
-    </table>
+    <ul>
+      <li v-for="music of musicList.songs" :key="music.id">
+        <a 
+        class="music-name-link" 
+        @click="selectMusic(music.id, music.name)" 
+        >
+        {{ music.name }}
+        </a>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -92,20 +91,27 @@ export default vm;
   position: sticky;
   top: 0;
   color: white;
+  background: orange;
 }
 
-/* ==============重置table的样式================= */
-.today-music table,
-.today-music table tr {
-  display: block;
-  width: 100%;
+.today-music ul {
+  margin: 0;
+  padding: 0 0 0 2px;
 }
-.today-music table tr td {
-    display: block;
-    min-width: 100px;
-    max-width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+.today-music ul li {
+  list-style: none;
+}
+.today-music ul li a {
+  display: block;
+  min-width: 100px;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.today-music ul li a:hover {
+  color: aquamarine;
 }
 </style>
