@@ -75,6 +75,7 @@ const vm = {
     };
   },
   methods: {
+    // playlistId 歌单id是通过读取用户播放列表得到的
     goToDetailsPlaylist(playlistId) {
       // 获取歌单详情
       let url = `${global.server}/playlist/detail?id=${playlistId}`;
@@ -93,6 +94,7 @@ const vm = {
         this.playlistTitle = result.playlist.name;
         let trackIds = result.playlist.trackIds.map(item => item.id);
         this.favoriteSongIds = trackIds; // 把歌曲id发给组件，让组件自己去请求
+        // BUG 如果是同一个playlistId 会报错
         this.$router.push(`/my/${playlistId}`);
       })
       .catch(reason => {
@@ -113,7 +115,7 @@ const vm = {
   },
   components: {},
   beforeRouteEnter(to, from, next) {
-    // 请求用户数据
+    // 请求用户播放列表数据
     fetch("http://localhost:3000/user/playlist?uid=245947021", {
       method: "GET",
       headers: {
@@ -128,7 +130,7 @@ const vm = {
       .then((result) => {
         next((vm) => {
           vm.userPlaylist = result;
-          // TODO 后期这里再请求一个今日推荐歌曲 /recommend/songs 替换掉dailySongs
+          // TODO 今日推荐和用户收藏歌单是分开的。后期这里再请求一个今日推荐歌曲 /recommend/songs 替换掉dailySongs
           let dailySongIds = dailySongs.data.dailySongs.map(item => item.id);
           // debugger;
           vm.dailySongIds = dailySongIds;

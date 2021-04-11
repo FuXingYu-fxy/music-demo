@@ -118,11 +118,11 @@ td,th {
   /* TODO  添加td的max-width 超过长度后文本截断*/
   color: white;
 }
-.music-name {
+a.music-name {
   text-decoration: none;
   cursor: pointer;
 }
-.music-name:hover {
+a.music-name:hover {
   color: #79fccc;
 }
 </style>

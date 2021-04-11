@@ -2,10 +2,10 @@
   <div class="today-music">
     <p class="today-recommended-text">{{ playlistTitle }}</p>
     <ul>
-      <li v-for="music of musicList.songs" :key="music.id">
+      <li v-for="(music, index) of musicList.songs" :key="music.id">
         <a 
         class="music-name-link" 
-        @click="selectMusic(music)" 
+        @click="selectMusic(music, index)" 
         >
         {{ music.name }}
         </a>
@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import global from "../js/global";
 import utils from "../js/utils";
+import Vue from 'vue';
 const vm = {
   name: "",
   props: {
@@ -47,9 +47,14 @@ const vm = {
   },
   components: {},
   methods: {
-    selectMusic(musicInfo) {
-      // this.$root.$children[0].currentMusicUrl = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+    selectMusic(musicInfo, index) {
+      // 为对象响应式添加index属性
+      // index 播放模式(单曲循环、列表顺序)需要歌曲相对于歌单的index
+      Vue.set(musicInfo, 'indexOfCurrentMusiclist', index);
+      Vue.set(musicInfo, 'musicList', this.musicList);
+      // App.vue组件将musicInfo作为props传递给 MusicComponent.vue组件
       this.$root.$children[0].musicInfo = musicInfo;
+      // TODO 想办法在这里传入歌单列表 this.musicList, 解决方案，将musicList整合进musicInfo里，和index一样
     },
     getSongInfoByFetch: utils.getSongInfoByFetch
   },
