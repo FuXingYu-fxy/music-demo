@@ -75,6 +75,7 @@ const vm = {
     });
   },
   methods: {
+    
     selectMusic(musicInfo) {
       this.$root.$children[0].musicInfo = musicInfo;
     },

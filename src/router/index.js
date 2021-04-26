@@ -65,4 +65,7 @@ const router = new Router({
   mode: 'history',
 })
 
+// router.beforeEach  router.beforeResolve  router.afterEach
+
+
 export default router

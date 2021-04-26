@@ -38,7 +38,6 @@
     </div>
 
     <div class="user-recommended-today">
-
       <router-view
         :favorite-song-ids='favoriteSongIds'
         :playlist-title='playlistTitle'
@@ -81,9 +80,9 @@ const vm = {
       let url = `${global.server}/playlist/detail?id=${playlistId}`;
       fetch(url, {
         method: 'GET',
-        headers: {
-          Origin: 'http://localhost:8080',
-        },
+        // headers: {
+        //   Origin: 'http://localhost:8080',
+        // },
         credentials: 'include'
       })
       .then(response => {
@@ -95,7 +94,7 @@ const vm = {
         let trackIds = result.playlist.trackIds.map(item => item.id);
         this.favoriteSongIds = trackIds; // 把歌曲id发给组件，让组件自己去请求
         // BUG 如果是同一个playlistId 会报错
-        this.$router.push(`/my/${playlistId}`);
+        this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
       })
       .catch(reason => {
         alert('用户状态异常');
@@ -250,7 +249,7 @@ export default vm;
 .today-music {
   width: 100%;
   /* 今日推荐会根据这个来定位 */
-  position: relative;  
+  position: relative;
 }
 .today-recommended-text {
   margin: 0;
@@ -265,7 +264,7 @@ export default vm;
   border: 1px solid red;
 }
 .user-recommended-today {
-  box-sizing: border-boxr;
+  box-sizing: border-box;
   border: 1px solid gold;
 }
 

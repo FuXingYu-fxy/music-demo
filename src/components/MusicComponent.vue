@@ -1,57 +1,60 @@
 <template>
   <div class="music-component" v-show="isNotAppHome">
-    <div class="music-info-container">
-      <span class="music-name">{{ songName }}</span>
 
-      <span class="artist">{{ artist }}</span>
-
-      <div class="duration">
-        <span class="music-current-progress">{{ getCurrentTime_MM_SS }}</span>
-        <span class="music-duration">{{ musicDuration }}</span>
-      </div>
-
-      <div class="music-progress-bar debugger-divtion">
-        <!-- 总进度条 -->
-        <div class="player-progress-inner">
-          <!-- TODO 如果有需要可以在这里加一个指示加载成功的进度条 .player-progress-load -->
-          <!-- 当前进度条 -->
-          <!-- TODO 进度条拖动 -->
-          <div class="player-progress-play" :style="currentMusicProgress">
-            <!-- 进度条上的点 -->
-            <i class="player-progress-dot"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 歌曲封面现在需要通过专辑内容接口获取 -->
-    <div :class="['music-cover', audio.paused ? '': 'music-cover-translate']" >
-      <img :src="musicCoverUrl" alt="专辑封面" />
-    </div>
 
     <div class="music-controls">
-      <a href="javascript:;" 
-         class="btn-previous"  
+      <a href="javascript:"
+         class="btn-previous"
          title="[上一首]"
          @click="prev"></a>
       <!-- 如果是播放状态, 按钮显示的应该是暂停，否则显示播放 -->
       <a
-        href="javascript:;"
+        href="javascript:"
         :class="audio.paused ? 'btn-play' : 'btn-pause'"
         @click="changePlayerStatus"
         :title="audio.paused ? '播放' : '暂停'"
       ></a>
-      <a href="javascript:;" 
-         class="btn-next" 
+      <a href="javascript:"
+         class="btn-next"
          title="[下一首]"
          @click="next"
       ></a>
-      <a href="javascript:;" 
-         class="btn-play-mode" 
+<!--      <div :class="['music-cover', audio.paused ? '': 'music-cover-animation']" >-->
+      <div :class="['music-cover music-cover-animation', audio.paused ? '' : 'music-cover-play']" >
+        <img :src="musicCoverUrl" alt="专辑封面" />
+      </div>
+      <div class="music-info-container">
+        <span class="music-name">{{ songName }}</span>
+
+        <span class="artist">{{ artist }}</span>
+
+        <div class="duration">
+          <span class="music-current-progress">{{ getCurrentTime_MM_SS }}</span>
+          <span class="music-duration">{{ musicDuration }}</span>
+        </div>
+
+        <div class="music-progress-bar debugger-divtion">
+          <!-- 总进度条 -->
+          <div class="player-progress-inner">
+            <!-- TODO 如果有需要可以在这里加一个指示加载成功的进度条 .player-progress-load -->
+            <!-- 当前进度条 -->
+            <!-- TODO 进度条拖动 -->
+            <div class="player-progress-play" :style="currentMusicProgress">
+              <!-- 进度条上的点 -->
+              <i class="player-progress-dot"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 歌曲封面现在需要通过专辑内容接口获取 -->
+
+      <a href="javascript:"
+         class="btn-play-mode"
          title="[列表循环]"></a>
-      <a href="javascript:;" class="btn-like-this" title="[喜欢]"></a>
-      <a href="javascript:;" class="btn-download" title="[下载]"></a>
-      <a href="javascript:;" class="btn-comment" title="[评论]"></a>
+      <a href="javascript:" class="btn-like-this" title="[喜欢]"></a>
+      <a href="javascript:" class="btn-download" title="[下载]"></a>
+      <a href="javascript:" class="btn-comment" title="[评论]"></a>
     </div>
   </div>
 </template>
@@ -80,7 +83,7 @@ export default {
       currentTime: 0,
       musicDuration_MS: 0,
       musicDuration: "00:00",
-      musicCoverUrl: "",
+      musicCoverUrl: "/static/imgs/defaultCover.jpg",
       // 当前音乐播放列表
       currentMusicList: null,
       // 当前音乐在歌单中的索引
@@ -90,7 +93,7 @@ export default {
   computed: {
     // computed所依赖的数据发生改变时，computed会重新计算
     isNotAppHome() {
-      // 首页不显示, 一定要加括号！！！！ 优先级原因
+      // 首页不显示, 一定要加括号！！！！
       return !(this.$route.path === "/");
     },
     getCurrentTime_MM_SS() {
@@ -153,7 +156,7 @@ export default {
     // }
   },
   methods: {
-    updateMusicMessage(musicInfo) {
+    updateMusicMessage(musicInfo, flag = true) {
       // 歌曲名
       this.songName = musicInfo.name;
       // 艺术家名 ar是个对象数组，先取出所有艺术家的名字，再用join用'/'连接起来
@@ -166,19 +169,22 @@ export default {
       //
       this.audio.src = `https://music.163.com/song/media/outer/url?id=${musicInfo.id}.mp3`;
 
-      // 设置索引
-      this.indexOfCurrentMusiclist = musicInfo.indexOfCurrentMusiclist;
+      if(flag) {
 
-      // 设置当前播放的音乐列表
-      // TODO musicList这里还有privileges字段，应该是对应版权信息，播放音质的字段
-      this.currentMusicList = musicInfo.musicList;
+        // 设置索引
+        this.indexOfCurrentMusiclist = musicInfo.indexOfCurrentMusiclist;
 
-      // 播放列表长度
-      this.musicListLength = musicInfo.musicList.songs.length;
+        // 设置当前播放的音乐列表
+        // TODO musicList这里还有privileges字段，应该是对应版权信息，播放音质的字段
+        this.currentMusicList = musicInfo.musicList;
+
+        // 播放列表长度
+        this.musicListLength = musicInfo.musicList.songs.length;
+      }
     },
     setMusicSrc(index) {
-      let musicId = this.currentMusicList.songs[index].id;
-      this.audio.src = `https://music.163.com/song/media/outer/url?id=${musicId}.mp3`;
+      let musicInfo = this.currentMusicList.songs[index];
+      this.updateMusicMessage(musicInfo, false);
     },
     // toggle按钮对应的方法
     changePlayerStatus() {
@@ -216,7 +222,7 @@ export default {
 }
 .music-component {
   width: 100vw;
-  height: 3rem;
+  height: 4rem;
   position: fixed;
   bottom: 0;
   box-sizing: border-box;
@@ -225,18 +231,19 @@ export default {
 /* 音乐信息展示栏 */
 .music-info-container {
   /* height: 100%; */
-  position: absolute;
-  top: -146%;
-  left: 25%;
+  /*position: absolute;*/
+  /*top: -146%;*/
+  /*left: 25%;*/
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 
-  background-color: #b0f4ff;
+  /*background-color: #b0f4ff;*/
   border-radius: 4px;
   padding: 2px;
   box-sizing: border-box;
   width: 35.5%;
+  min-height: 66.667px;
   /* 留出空位来给albumn */
   padding-left: 6%;
 }
@@ -244,42 +251,42 @@ export default {
   width: 75px;
   height: 75px;
   position: absolute;
-  /* top: -154%; */
-  top: -66%;
-  left: 25%;
+  top: -23%;
+  left: 29%;
   transition: 1s;
-  /* BUG 这两个动画组合在一起会出现问题, 但是其他例子不会出现这种情况, 无语*/
-  /* animation: avatar-translate 1s forwards; */
-  /* avatar-rotate 10s linear 1s infinite; */
 }
-/* .music-cover-animation {
-  animation: avatar-rotate 10s linear 1.2s infinite;
+.music-cover-animation {
+  animation: avatar-rotate 10s linear 1s infinite;
+  animation-play-state: paused;
+}
+.music-cover-play {
+  animation-play-state: running;
 }
 @keyframes avatar-rotate {
   100% {
-    transform: rotate(360deg);
+    transform: rotate(1turn);
   }
 }
 
 @keyframes avatar-translate {
-  100% {
-    transform: translateY(-45%);
+  0% {
+    transform: translateY(45%);
   }
-} */
+}
 
 .music-cover img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
 }
-.music-cover-translate {
-  transform: translateY(-45%);
-}
+/*.music-cover-translate {*/
+/*  transform: translateY(-45%);*/
+/*}*/
 /* ==============================进度条部分============================== */
 
 /* 作者 */
 .artist {
-  color: #92a2a2;
+  color: #FF9800;
   font-size: 0.1rem;
 }
 /* 进度条两边的时间 */
