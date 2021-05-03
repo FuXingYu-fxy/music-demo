@@ -31,22 +31,22 @@ let routes = [
     path: '/my',
     // name: 'my',  // 当父级路由嵌套有默认子路由时，不能使用 name 进行导航，使用path 或者删掉name
     component: My,
-    children: [
-      {
-        // 进入时重定向至 今日推荐
-        path: '',
-        redirect: 'todayrecommend'
-      },
-      {
-        // 默认子路由
-        path: 'todayrecommend',
-        component: UserFavoriteMusic
-      },
-      {
-        path: ':id',
-        component: UserFavoriteMusic
-      }
-    ]
+    // children: [
+    //   {
+    //     // 进入时重定向至 今日推荐
+    //     path: '',
+    //     redirect: 'todayrecommend'
+    //   },
+    //   {
+    //     // 默认子路由
+    //     path: 'todayrecommend',
+    //     component: UserFavoriteMusic
+    //   },
+    //   {
+    //     path: ':id',
+    //     component: UserFavoriteMusic
+    //   }
+    // ]
 
   },
   {

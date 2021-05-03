@@ -38,14 +38,16 @@
     </div>
 
     <div class="user-recommended-today">
-      <router-view
-        :favorite-song-ids='favoriteSongIds'
+      <UserFavoriteMusic
+        :favorite-song-ids='sharedData.favoriteSongIds'
         :playlist-title='playlistTitle'
         :daily-song-ids='dailySongIds'
+        @update-music-info="updateMusicInfo"
       >
-      </router-view>
+      </UserFavoriteMusic>
     </div>
 
+<!--    歌词部分-->
     <div class="lyrics-container">
       <div>
         <ul class="lyrics-section">
@@ -61,6 +63,9 @@
 <script>
 import { userInfo, dailySongs } from "../js/daily.js";
 import global from "../js/global.js";
+import UserFavoriteMusic from './UserFavoriteMusic'
+import store from '../js/store'
+
 const vm = {
   name: "",
   data() {
@@ -68,9 +73,10 @@ const vm = {
       userInfo,
       userPlaylist: [],
       // TODO 更换为网络请求
-      dailySongIds:[], // 今日推荐的歌曲
+      dailySongIds:[], // '今日推荐' 歌曲id
       playlistTitle: '今日推荐',
-      favoriteSongIds: [], // 用户喜爱歌单的歌曲id
+      // favoriteSongIds: store.state // 用户喜爱歌单的歌曲id
+      sharedData: store.state,
     };
   },
   methods: {
@@ -92,13 +98,22 @@ const vm = {
         // result 是 playlist json数据， 只有 result.playlist.trackIds才是完整的歌曲数据
         this.playlistTitle = result.playlist.name;
         let trackIds = result.playlist.trackIds.map(item => item.id);
-        this.favoriteSongIds = trackIds; // 把歌曲id发给组件，让组件自己去请求
+        // ******
+        store.setMessageAction('favoriteSongIds', trackIds);
+        // this.$nextTick(() => console.log(this.favoriteSongIds));
         // BUG 如果是同一个playlistId 会报错
-        this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
+        // *** 取消路由 ***
+        // this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
       })
       .catch(reason => {
         alert('用户状态异常');
       })
+    },
+    updateMusicInfo(value) {
+      store.setMessageAction('musicInfo', value);
+      let flagBit = this.sharedData.musicInfoFlagBit;
+      flagBit = (flagBit + 1) % 10;
+      store.setMessageAction('musicInfoFlagBit', flagBit);
     }
   },
   computed: {
@@ -112,7 +127,9 @@ const vm = {
       return splitedLyrics;
     },
   },
-  components: {},
+  components: {
+    UserFavoriteMusic
+  },
   beforeRouteEnter(to, from, next) {
     // 请求用户播放列表数据
     fetch("http://localhost:3000/user/playlist?uid=245947021", {

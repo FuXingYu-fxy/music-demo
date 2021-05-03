@@ -19,9 +19,9 @@
          title="[下一首]"
          @click="next"
       ></a>
-<!--      <div :class="['music-cover', audio.paused ? '': 'music-cover-animation']" >-->
-      <div :class="['music-cover music-cover-animation', audio.paused ? '' : 'music-cover-play']" >
-        <img :src="musicCoverUrl" alt="专辑封面" />
+      <!--      <div :class="['music-cover', audio.paused ? '': 'music-cover-animation']" >-->
+      <div :class="['music-cover music-cover-animation', audio.paused ? '' : 'music-cover-play']">
+        <img :src="musicCoverUrl" alt="专辑封面"/>
       </div>
       <div class="music-info-container">
         <span class="music-name">{{ songName }}</span>
@@ -61,6 +61,7 @@
 
 <script>
 import utils from "../js/utils";
+
 export default {
   name: "MusicComponent",
   props: {
@@ -72,6 +73,11 @@ export default {
         return {};
       },
     },
+    musicInfoFlagBit: {
+      type: Number,
+      required: true,
+      default: 0
+    }
   },
   data() {
     return {
@@ -87,7 +93,7 @@ export default {
       // 当前音乐播放列表
       currentMusicList: null,
       // 当前音乐在歌单中的索引
-      indexOfCurrentMusiclist: 0
+      indexOfCurrentMusiclist: 0,
     };
   },
   computed: {
@@ -101,7 +107,7 @@ export default {
     },
     currentMusicProgress() {
       let styleObj = null;
-      if (this.musicDuration_MS == 0) {
+      if (this.musicDuration_MS === 0) {
         styleObj = {
           width: "0%;",
         };
@@ -125,8 +131,7 @@ export default {
     // FIXME 能不能不监听事件，改成数据驱动？
     audio.addEventListener("timeupdate", () => {
       // 可以监测 currentTime的变化
-      let currentTime = audio.currentTime;
-      this.currentTime = currentTime;
+      this.currentTime = audio.currentTime;
     });
 
     audio.addEventListener('ended', e => {
@@ -137,10 +142,14 @@ export default {
   watch: {
     // FIXME 监听一个对象貌似开销挺大？ 目的只是为了更新数据，能不能设置一个标志位来代替这个对象？标志位改变意味着对象改变
     // 每次更改其他的歌曲这里都能监测到
-    // musicInfo来源是：UserFavoriteMusic传给App， App再作为属性传递给子组件
-    musicInfo(newMusicInfo) {
-      this.updateMusicMessage(newMusicInfo);
+    // musicInfo来源是：App作为pros传递给子组件
+    musicInfoFlagBit() {
+      debugger;
+      this.updateMusicMessage(this.musicInfo);
     },
+    // musicInfo(newMusicInfo) {
+    //   this.updateMusicMessage(newMusicInfo);
+    // },
     // 监听播放列表的变化
     currentMusicList(value) {
       // console.log(value);
@@ -157,6 +166,7 @@ export default {
   },
   methods: {
     updateMusicMessage(musicInfo, flag = true) {
+      debugger;
       // 歌曲名
       this.songName = musicInfo.name;
       // 艺术家名 ar是个对象数组，先取出所有艺术家的名字，再用join用'/'连接起来
@@ -169,7 +179,7 @@ export default {
       //
       this.audio.src = `https://music.163.com/song/media/outer/url?id=${musicInfo.id}.mp3`;
 
-      if(flag) {
+      if (flag) {
 
         // 设置索引
         this.indexOfCurrentMusiclist = musicInfo.indexOfCurrentMusiclist;
@@ -191,7 +201,7 @@ export default {
       // audio 内部有一个属性 audio.paused 可以观察播放状态
       // this.currentPlayerStatus = !this.currentPlayerStatus;
       if (this.audio.paused) {
-      // 如果是当前是暂停状态，按钮的功能就应该是播放, 悬浮文字要改变为暂停, 与按钮的功能相反
+        // 如果是当前是暂停状态，按钮的功能就应该是播放, 悬浮文字要改变为暂停, 与按钮的功能相反
         this.audio.play();  // 会改变this.audio.paused的属性
         // 变为播放状态后，鼠标悬停文字应该是暂停
         // this.playerStatus = "暂停";
@@ -220,6 +230,7 @@ export default {
   box-sizing: border-box;
   border: 1px solid greenyellow;
 }
+
 .music-component {
   width: 100vw;
   height: 4rem;
@@ -228,6 +239,7 @@ export default {
   box-sizing: border-box;
   border: 1px solid greenyellow;
 }
+
 /* 音乐信息展示栏 */
 .music-info-container {
   /* height: 100%; */
@@ -247,6 +259,7 @@ export default {
   /* 留出空位来给albumn */
   padding-left: 6%;
 }
+
 .music-cover {
   width: 75px;
   height: 75px;
@@ -255,13 +268,16 @@ export default {
   left: 29%;
   transition: 1s;
 }
+
 .music-cover-animation {
   animation: avatar-rotate 10s linear 1s infinite;
   animation-play-state: paused;
 }
+
 .music-cover-play {
   animation-play-state: running;
 }
+
 @keyframes avatar-rotate {
   100% {
     transform: rotate(1turn);
@@ -279,6 +295,7 @@ export default {
   height: 100%;
   border-radius: 50%;
 }
+
 /*.music-cover-translate {*/
 /*  transform: translateY(-45%);*/
 /*}*/
@@ -289,6 +306,7 @@ export default {
   color: #FF9800;
   font-size: 0.1rem;
 }
+
 /* 进度条两边的时间 */
 .duration {
   display: flex;
@@ -298,16 +316,19 @@ export default {
   color: #02acfd;
   margin-bottom: 3px;
 }
+
 /* 进度条的外层宽高 */
 .music-progress-bar {
   width: 100%;
   height: 7px;
 }
+
 .player-progress-inner {
   width: 100%;
   height: 100%;
   background-color: white;
 }
+
 /* 当前进度条取决于player-progress-play的宽度 */
 .player-progress-play {
   /* 在组件中通过计算 currentTime 和 duration得出进度条的百分比 */
@@ -315,6 +336,7 @@ export default {
   height: 100%;
   background-color: blue;
 }
+
 .player-progress-dot {
   width: 10px;
   height: 10px;
@@ -336,6 +358,7 @@ export default {
   height: 100%;
   background-color: #79ad979e;
 }
+
 /* 按钮的通用样式 */
 .music-controls a {
   display: block;
@@ -344,27 +367,35 @@ export default {
   background-size: 100% 100%;
   margin: 0 2%;
 }
+
 .btn-previous {
   background-image: url("/static/imgs/prev.png");
 }
+
 .btn-play {
   background-image: url("/static/imgs/play.png");
 }
+
 .btn-pause {
   background-image: url("/static/imgs/pause.png");
 }
+
 .btn-next {
   background-image: url("/static/imgs/next.png");
 }
+
 .btn-play-mode {
   background-image: url("/static/imgs/loop.png");
 }
+
 .btn-like-this {
   background-image: url("/static/imgs/unlike.png");
 }
+
 .btn-download {
   background-image: url("/static/imgs/random.png");
 }
+
 .btn-comment {
   background-image: url("/static/imgs/single.png");
 }

@@ -13,12 +13,13 @@
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
     <!-- 音乐播放条组件 -->
-    <music-component :music-info='musicInfo'/>
+    <music-component :music-info='sharedData.musicInfo' :music-info-flag-bit="sharedData.musicInfoFlagBit"/>
   </div>
 </template>
 
 <script>
 import MusicComponent from './components/MusicComponent.vue';
+import store from './js/store'
 export default {
   name: "App",
   components: {
@@ -26,10 +27,11 @@ export default {
   },
   data() {
     return {
-      musicInfo: {},
+      sharedData: store.state,
     }
   },
   computed: {
+
     // isNotAppHome() {
     //   // 首页不显示播放框
     //   return !this.$route.path === '/';
