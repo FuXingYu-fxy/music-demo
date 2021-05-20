@@ -1,7 +1,6 @@
 <template>
   <div class="music-component" v-show="isNotAppHome">
 
-
     <div class="music-controls">
       <a href="javascript:"
          class="btn-previous"
@@ -83,7 +82,7 @@ export default {
     return {
       isLoop: true,
       audio: {},
-      playerStatus: "播放",
+      // playerStatus: "播放",
       songName: " ",
       artist: " ",
       currentTime: 0,
@@ -99,7 +98,7 @@ export default {
   computed: {
     // computed所依赖的数据发生改变时，computed会重新计算
     isNotAppHome() {
-      // 首页不显示, 一定要加括号！！！！
+      // 首页不显示
       return !(this.$route.path === "/");
     },
     getCurrentTime_MM_SS() {
@@ -114,10 +113,8 @@ export default {
       } else {
         styleObj = {
           width:
-            (
-              (this.currentTime / Math.floor(this.musicDuration_MS / 1000)) *
-              100
-            ).toFixed(2) + "%",
+            ((this.currentTime / Math.floor(this.musicDuration_MS / 1000)) * 100)
+              .toFixed(2) + "%",
         };
       }
       return styleObj;
@@ -128,7 +125,6 @@ export default {
     audio.autoplay = true;
     this.audio = audio;
 
-    // FIXME 能不能不监听事件，改成数据驱动？
     audio.addEventListener("timeupdate", () => {
       // 可以监测 currentTime的变化
       this.currentTime = audio.currentTime;
@@ -136,15 +132,14 @@ export default {
 
     audio.addEventListener('ended', e => {
       // 音乐播放结束后将会触发该事件
-
+      this.next();
     })
   },
   watch: {
-    // FIXME 监听一个对象貌似开销挺大？ 目的只是为了更新数据，能不能设置一个标志位来代替这个对象？标志位改变意味着对象改变
     // 每次更改其他的歌曲这里都能监测到
     // musicInfo来源是：App作为pros传递给子组件
     musicInfoFlagBit() {
-      debugger;
+      // FIXMED 监听一个对象开销很大,目的只是为了更新数据，设置一个标志位来代替这个对象, 标志位改变意味着对象改变
       this.updateMusicMessage(this.musicInfo);
     },
     // musicInfo(newMusicInfo) {
@@ -166,7 +161,7 @@ export default {
   },
   methods: {
     updateMusicMessage(musicInfo, flag = true) {
-      debugger;
+      // debugger;
       // 歌曲名
       this.songName = musicInfo.name;
       // 艺术家名 ar是个对象数组，先取出所有艺术家的名字，再用join用'/'连接起来
@@ -214,12 +209,16 @@ export default {
     next() {
       this.indexOfCurrentMusiclist = (this.indexOfCurrentMusiclist + 1) % this.musicListLength;
       this.setMusicSrc(this.indexOfCurrentMusiclist);
+      let musicId = this.currentMusicList.songs[this.indexOfCurrentMusiclist].id;
+      this.$emit('update-current-play-music-id', musicId);
     },
     // 上一首对应的方法
     prev() {
       this.indexOfCurrentMusiclist--;
       this.indexOfCurrentMusiclist = this.indexOfCurrentMusiclist < 0 ? this.musicListLength - 1 : this.indexOfCurrentMusiclist;
       this.setMusicSrc(this.indexOfCurrentMusiclist);
+      let musicId = this.currentMusicList.songs[this.indexOfCurrentMusiclist].id;
+      this.$emit('update-current-play-music-id', musicId);
     }
   },
 };
@@ -265,7 +264,7 @@ export default {
   height: 75px;
   position: absolute;
   top: -23%;
-  left: 29%;
+  left: 28%;
   transition: 1s;
 }
 

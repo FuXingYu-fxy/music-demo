@@ -21,30 +21,32 @@
       <div class="user-favorite">
         <div
           class="playlist"
-          v-for="music of userPlaylist.playlist"
-          :key="music.id"
+          v-for="musicList of userPlaylist.playlist"
+          :key="musicList.id"
         >
           <a class="playlist-link"
-             @click="goToDetailsPlaylist(music.id)"
+             @click="goToDetailsPlaylist(musicList.id)"
             ><img
               class="cover-img"
-              :src="music.coverImgUrl"
+              :src="musicList.coverImgUrl"
               alt="用户歌单图片"
             />
-            <p class="playlist-title">{{ music.name }}</p>
+            <p class="playlist-title">{{ musicList.name }}</p>
           </a>
         </div>
       </div>
     </div>
 
     <div class="user-recommended-today">
-      <UserFavoriteMusic
+      <user-favorite-music
+        :daily-song-ids='dailySongIds'
         :favorite-song-ids='sharedData.favoriteSongIds'
         :playlist-title='playlistTitle'
-        :daily-song-ids='dailySongIds'
         @update-music-info="updateMusicInfo"
+        :current-play-music-id="getCurrentPlayMusicId"
+        @update-current-play-music-id="updateCurrentPlayMusicId"
       >
-      </UserFavoriteMusic>
+      </user-favorite-music>
     </div>
 
 <!--    歌词部分-->
@@ -61,7 +63,7 @@
 </template>
 
 <script>
-import { userInfo, dailySongs } from "../js/daily.js";
+import {dailySongs, userInfo} from "../js/daily.js";
 import global from "../js/global.js";
 import UserFavoriteMusic from './UserFavoriteMusic'
 import store from '../js/store'
@@ -114,6 +116,10 @@ const vm = {
       let flagBit = this.sharedData.musicInfoFlagBit;
       flagBit = (flagBit + 1) % 10;
       store.setMessageAction('musicInfoFlagBit', flagBit);
+    },
+    updateCurrentPlayMusicId(value) {
+      // 歌曲高亮功能
+      store.setMessageAction("currentPlayMusicId", value);
     }
   },
   computed: {
@@ -126,6 +132,10 @@ const vm = {
       let splitedLyrics = Lyrics.split(/\s*\n*\[.*?\]\s*/).filter((v) => !!v);
       return splitedLyrics;
     },
+    getCurrentPlayMusicId() {
+      // console.log(this.sharedData.currentPlayMusicId);
+      return this.sharedData.currentPlayMusicId;
+    }
   },
   components: {
     UserFavoriteMusic

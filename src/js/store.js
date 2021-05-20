@@ -3,7 +3,8 @@ const store = {
   state: {
     favoriteSongIds: [], // 用户喜爱歌单的歌曲id,
     musicInfo: {},
-    musicInfoFlagBit: 0
+    musicInfoFlagBit: 0,
+    currentPlayMusicId: -1
   },
   setMessageAction(filed, value) {
     if (this.debug) console.log(`setMessageAction triggered with ${filed} => ${value}`)

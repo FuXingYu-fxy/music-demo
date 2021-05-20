@@ -13,7 +13,11 @@
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
     <!-- 音乐播放条组件 -->
-    <music-component :music-info='sharedData.musicInfo' :music-info-flag-bit="sharedData.musicInfoFlagBit"/>
+    <music-component
+      :music-info='sharedData.musicInfo'
+      :music-info-flag-bit="sharedData.musicInfoFlagBit"
+      @update-current-play-music-id="updateCurrentPlayMusicId"
+    />
   </div>
 </template>
 
@@ -25,18 +29,24 @@ export default {
   components: {
     MusicComponent
   },
+
   data() {
     return {
       sharedData: store.state,
     }
   },
   computed: {
-
     // isNotAppHome() {
     //   // 首页不显示播放框
     //   return !this.$route.path === '/';
     // }
-  }
+  },
+  methods: {
+    updateCurrentPlayMusicId(value) {
+      // console.log(value);
+      store.setMessageAction("currentPlayMusicId", value);
+    }
+  },
 };
 </script>
 <style>

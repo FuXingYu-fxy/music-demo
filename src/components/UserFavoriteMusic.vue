@@ -4,7 +4,7 @@
     <ul>
       <li v-for="(music, index) of musicList.songs" :key="music.id">
         <a
-        class="music-name-link"
+        :class="['music-name-link', music.id === currentPlayMusicId ? 'highlight' : '']"
         @click="selectMusic(music, index)"
         >
         {{ music.name }}
@@ -36,9 +36,13 @@ const vm = {
       type: Array,
       required: true,
       default() {
-        return ["初始值呢"];
+        return [];
       },
     },
+    currentPlayMusicId: {
+      type: Number,
+      required: true
+    }
   },
   data() {
     return {
@@ -56,6 +60,7 @@ const vm = {
       // App.vue组件将musicInfo作为props传递给 MusicComponent.vue组件
       this.$emit('update-music-info', musicInfo);
       // this.$root.$children[0].musicInfo = musicInfo;
+      this.$emit('update-current-play-music-id', musicInfo.id);
     },
     getSongInfoByFetch: utils.getSongInfoByFetch
   },
@@ -74,7 +79,7 @@ const vm = {
 export default vm;
 </script>
 
-<style scpoed>
+<style scoped>
 .today-music {
   width: 100%;
 }
@@ -104,6 +109,9 @@ export default vm;
 }
 
 .today-music ul li a:hover {
+  color: aquamarine;
+}
+.highlight {
   color: aquamarine;
 }
 </style>
