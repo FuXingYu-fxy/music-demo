@@ -75,7 +75,7 @@ const vm = {
     });
   },
   methods: {
-    
+
     selectMusic(musicInfo) {
       this.$root.$children[0].musicInfo = musicInfo;
     },
@@ -86,9 +86,9 @@ const vm = {
   },
 };
 export default vm;
-</script> 
+</script>
 
-<style scpoed>
+<style scoped>
 .container {
   width: 100vw;
   height: 100%;

@@ -248,6 +248,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  /*音乐名和作者居中*/
+  align-items: center;
 
   /*background-color: #b0f4ff;*/
   border-radius: 4px;
@@ -314,6 +316,7 @@ export default {
   font-size: 0.1rem;
   color: #02acfd;
   margin-bottom: 3px;
+  width: 100%;
 }
 
 /* 进度条的外层宽高 */
