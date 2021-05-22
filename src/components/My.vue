@@ -25,7 +25,7 @@
           :key="musicList.id"
         >
           <a class="playlist-link"
-             @click="goToDetailsPlaylist(musicList.id)"
+             @click="goToDetailsPlaylist(musicList.id, musicList.name)"
             ><img
               class="cover-img"
               :src="musicList.coverImgUrl"
@@ -45,6 +45,8 @@
         @update-music-info="updateMusicInfo"
         :current-play-music-id="getCurrentPlayMusicId"
         @update-current-play-music-id="updateCurrentPlayMusicId"
+        :is-loading="loading"
+        @change-loading-status="loading = $event"
       >
       </user-favorite-music>
     </div>
@@ -59,6 +61,8 @@
         </ul>
       </div>
     </div>
+<!--    <button @click="getLoginStatus">获取登录状态</button>-->
+<!--    <button @click="login">登录</button>-->
   </div>
 </template>
 
@@ -79,18 +83,41 @@ const vm = {
       playlistTitle: '今日推荐',
       // favoriteSongIds: store.state // 用户喜爱歌单的歌曲id
       sharedData: store.state,
+      // 歌曲列表加载状态
+      loading: false
     };
   },
   methods: {
+    // ****************************测试登录状态********************************************
+    // login
+    // login() {
+    //   let url = `http://localhost:3000/login?email=xy1253076882@163.com&password=fuxingyuniubi.`;
+    //   fetch(url, {
+    //     method: "GET",
+    //     credentials: "include"
+    //   }).then(response => response.json())
+    //     .then(console.log);
+    //
+    // },
+    // // 获取登录状态
+    // getLoginStatus() {
+    //   let url = `http://localhost:3000/login/status`;
+    //   fetch(url, {
+    //     method: "GET",
+    //     credentials: "include"
+    //   }).then(response => response.json())
+    //     .then(value => console.log(value));
+    // },
+
+    //**************************************************************
     // playlistId 歌单id是通过读取用户播放列表得到的
-    goToDetailsPlaylist(playlistId) {
+    goToDetailsPlaylist(playlistId, playlistTitle) {
       // 获取歌单详情
+      this.playlistTitle = playlistTitle;
+      this.loading = true;
       let url = `${global.server}/playlist/detail?id=${playlistId}`;
       fetch(url, {
         method: 'GET',
-        // headers: {
-        //   Origin: 'http://localhost:8080',
-        // },
         credentials: 'include'
       })
       .then(response => {
@@ -98,7 +125,6 @@ const vm = {
       })
       .then(result => {
         // result 是 playlist json数据， 只有 result.playlist.trackIds才是完整的歌曲数据
-        this.playlistTitle = result.playlist.name;
         let trackIds = result.playlist.trackIds.map(item => item.id);
         // ******
         store.setMessageAction('favoriteSongIds', trackIds);
@@ -106,6 +132,10 @@ const vm = {
         // BUG 如果是同一个playlistId 会报错
         // *** 取消路由 ***
         // this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
+        // this.$nextTick(() => this.loading = false);
+
+        // 不能加在这里，因为UserFavoriteMusic组件里还有请求，应该加在那里面
+        // this.loading = false;
       })
       .catch(reason => {
         alert('用户状态异常');
@@ -192,7 +222,8 @@ export default vm;
 
 
 .user-page-container > div {
-  max-height: 75%;
+  /*max-height: 75%;*/
+  height: 75%;
   overflow: auto;
 }
 .user-page-container > div::-webkit-scrollbar {

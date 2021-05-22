@@ -1,13 +1,23 @@
 <template>
   <div class="today-music">
     <p class="today-recommended-text">{{ playlistTitle }}</p>
-    <ul>
+
+    <div v-show="isLoading" class="loading-box">
+      <loading-animation
+        :duration="1"
+        color="purple"
+      >
+        <p style="font-size: 15px">加载中</p>
+      </loading-animation>
+    </div>
+
+    <ul v-show="!isLoading">
       <li v-for="(music, index) of musicList.songs" :key="music.id">
         <a
-        :class="['music-name-link', music.id === currentPlayMusicId ? 'highlight' : '']"
-        @click="selectMusic(music, index)"
+          :class="['music-name-link', music.id === currentPlayMusicId ? 'highlight' : '']"
+          @click="selectMusic(music, index)"
         >
-        {{ music.name }}
+          {{ music.name }}
         </a>
       </li>
     </ul>
@@ -15,8 +25,10 @@
 </template>
 
 <script>
+import LoadingAnimation from './LoadingAnimation'
 import utils from "../js/utils";
 import Vue from 'vue';
+
 const vm = {
   name: "",
   props: {
@@ -42,6 +54,10 @@ const vm = {
     currentPlayMusicId: {
       type: Number,
       required: true
+    },
+    isLoading: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -49,7 +65,9 @@ const vm = {
       musicList: [],
     };
   },
-  components: {},
+  components: {
+    LoadingAnimation
+  },
   methods: {
     selectMusic(musicInfo, index) {
       // 为对象响应式添加index属性
@@ -62,17 +80,26 @@ const vm = {
       // this.$root.$children[0].musicInfo = musicInfo;
       this.$emit('update-current-play-music-id', musicInfo.id);
     },
-    getSongInfoByFetch: utils.getSongInfoByFetch
+    getSongInfoBySongIds: utils.getSongInfoBySongIds,
+
   },
   watch: {
     favoriteSongIds(newValue) {
-      this.getSongInfoByFetch(newValue)
-      .then(value => this.musicList = value);
+      this.getSongInfoBySongIds(newValue)
+        .then(value => {
+          this.musicList = value;
+          console.log(value);
+          this.$emit("change-loading-status", false);
+        });
     },
     // 因为父组件的值不知道何时传过来，所以在这里监听dailySongIds
     dailySongIds(newValue) {
-      this.getSongInfoByFetch(newValue)
-      .then(value => this.musicList = value);
+      this.getSongInfoBySongIds(newValue)
+        .then(value => {
+          this.musicList = value;
+          console.log(value);
+          this.$emit("change-loading-status", false);
+        });
     },
   },
 };
@@ -83,6 +110,7 @@ export default vm;
 .today-music {
   width: 100%;
 }
+
 .today-recommended-text {
   margin: 0;
   position: sticky;
@@ -94,10 +122,13 @@ export default vm;
 .today-music ul {
   margin: 0;
   padding: 0 0 0 2px;
+
 }
+
 .today-music ul li {
   list-style: none;
 }
+
 .today-music ul li a {
   display: block;
   min-width: 100px;
@@ -111,7 +142,14 @@ export default vm;
 .today-music ul li a:hover {
   color: aquamarine;
 }
+
 .highlight {
   color: aquamarine;
+}
+
+/*加载动画的位置*/
+.loading-box {
+  display: flex;
+  justify-content: center;
 }
 </style>

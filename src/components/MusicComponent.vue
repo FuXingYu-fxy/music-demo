@@ -99,7 +99,7 @@ export default {
     // computed所依赖的数据发生改变时，computed会重新计算
     isNotAppHome() {
       // 首页不显示
-      return !(this.$route.path === "/");
+      return !(this.$route.path === "/" || this.$route.path === "/login");
     },
     getCurrentTime_MM_SS() {
       return utils.formatDuration(this.currentTime * 1000);

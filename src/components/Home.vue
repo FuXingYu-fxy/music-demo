@@ -67,10 +67,10 @@ export default {
             console.log(`服务器返回状态码异常: ${res.code}`);
             return;
           }
-          let value = res.result.songs;
+          // 最多显示20条数据
+          let value = res.result.songs.slice(0, 20);
           this.searchResult = value.map(item => ({id: item.id, musicName: item.name, artists: item.artists[0].name}));
           this.isShow = true;
-          console.log(this.searchResult);
         })
 
     }

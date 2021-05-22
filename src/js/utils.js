@@ -19,14 +19,16 @@ function formatDuration(dt) {
  * @param {Array} songIds 歌曲ID，必须是数组
  * @returns {Promise} 返回一个Promise，需使用then(value)接受
  */
-function getSongInfoByFetch(songIds) {
+function getSongInfoBySongIds(songIds) {
+  // 限制200首
+  songIds = songIds.slice(0, 200);
   let url = `${global.server}/song/detail?ids=${songIds.join(",")}`;
   // debugger;
   return fetch(url, {
     method: "GET",
-    headers: {
-      Origin: "http://localhost:8080",
-    },
+    // headers: {
+    //   Origin: "http://localhost:8080",
+    // },
     credentials: "include",
   })
     .then(response => response.json())
@@ -82,9 +84,36 @@ function debounce(func, wait = 300, immediate = true) {
   }
 }
 
+async function isLogined() {
+  let url = `${global.server}/login/status`;
+  let ret = await fetch(url, {
+    method: "GET",
+    credentials: "include"
+  }).then(response => response.json())
+    .then(res => {
+      if(res.data.code !== 200) {
+        console.log(`服务器返回状态码异常: code: ${res.data.code}`);
+        return false;
+      }
+      if(!(res.data.account)) {
+        // debugger;
+        console.log('未登录');
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .catch(reason => {
+      alert.log(reason);
+      return false;
+    });
+  return ret;
+}
+
 export default {
   formatDuration,
-  getSongInfoByFetch,
+  getSongInfoBySongIds,
   debounce,
   getSongInfoByKeywords,
+  isLogined,
 }

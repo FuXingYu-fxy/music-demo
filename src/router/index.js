@@ -9,12 +9,19 @@ const About = () => import('@/components/About.vue');
 const More = () => import('@/components/More.vue');
 const Describe = () => import('@/components/Describe.vue');
 const Music = () => import('@/components/Music.vue');
-const UserFavoriteMusic = () => import('@/components/UserFavoriteMusic');
+// const UserFavoriteMusic = () => import('@/components/UserFavoriteMusic');
+const Login = () => import('@/components/Login.vue');
 
 let routes = [
   {
     path: '/',
+    name: 'root',
     components: { describe: Describe },
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
   },
   {
     path: '/music',

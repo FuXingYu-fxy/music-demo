@@ -23,13 +23,6 @@ export default {
     return {};
   },
   mounted() {
-    // let i = 0;
-    // document.querySelectorAll(".animation").forEach(item => {
-    //   setTimeout(() => {
-    //     item.style.setProperty("animation-play-state", "running");
-    //   }, (i + 1) * 1200);
-    //   i++;
-    // })
     let maxAnimationCount = 3;
     let listP = document.querySelectorAll(".animation");
     setTimeout(() => {
@@ -42,7 +35,8 @@ export default {
       listP[2].style.setProperty("animation-play-state", "running");
     }, 3200);
     let animationCounter = 0;
-    function foo(e) {
+    function foo() {
+      // let foo = () => {
       animationCounter++;
       // 在倒数第二个动画结束后就可以开始显示两个按钮了
       if (animationCounter < maxAnimationCount - 1) return;
@@ -55,13 +49,14 @@ export default {
   components: {},
   methods: {
     goHome() {
-      this.$router.push("/home");
-    }
-  }
+      this.$router.push("/home").catch(reason => console.log("导航失败，预计原因是用户未登录"));
+    },
+  },
+
 };
 </script>
 
-<style scpoed>
+<style scoped>
 .text > p {
   margin: 0;
 }
@@ -131,7 +126,8 @@ export default {
   border-radius: 2rem;
   border: 1px solid #42b983;
   box-sizing: border-box;
-  color: var(--theme-color, #42b983);
+  /*color: var(--theme-color, #42b983);*/
+  color: #42b983;
   display: inline-block;
   font-size: 1.05rem;
   letter-spacing: 0.1rem;
@@ -143,7 +139,8 @@ export default {
 }
 
 .button-container a:last-child {
-  background-color: var(--theme-color, #42b983);
+  /*background-color: var(--theme-color, #42b983);*/
+  background-color: #42b983;
   color: #fff;
 }
 
