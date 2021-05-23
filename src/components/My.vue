@@ -21,17 +21,17 @@
       <div class="user-favorite">
         <div
           class="playlist"
-          v-for="musicList of userPlaylist.playlist"
-          :key="musicList.id"
+          v-for="playList of userPlaylist.playlist"
+          :key="playList.id"
         >
           <a class="playlist-link"
-             @click="goToDetailsPlaylist(musicList.id, musicList.name)"
+             @click="goToDetailsPlaylist(playList.id, playList.name)"
             ><img
               class="cover-img"
-              :src="musicList.coverImgUrl"
+              :src="playList.coverImgUrl"
               alt="用户歌单图片"
             />
-            <p class="playlist-title">{{ musicList.name }}</p>
+            <p class="playlist-title">{{ playList.name }}</p>
           </a>
         </div>
       </div>
@@ -77,7 +77,7 @@ const vm = {
   data() {
     return {
       userInfo,
-      userPlaylist: [],
+      userPlaylist: {},
       // TODO 更换为网络请求
       dailySongIds:[], // '今日推荐' 歌曲id
       playlistTitle: '今日推荐',
@@ -141,11 +141,15 @@ const vm = {
         alert('用户状态异常');
       })
     },
-    updateMusicInfo(value) {
-      store.setMessageAction('musicInfo', value);
-      let flagBit = this.sharedData.musicInfoFlagBit;
+    updateMusicInfo(currentPlayMusicInfo, musicListInfo) {
+      console.log("My.vue");
+      console.log(currentPlayMusicInfo);
+      // console.log(value);
+      store.setMessageAction('currentPlayMusicInfo', currentPlayMusicInfo)
+      store.setMessageAction('musicListInfo', musicListInfo);
+      let flagBit = this.sharedData.musicListInfoFlagBit;
       flagBit = (flagBit + 1) % 10;
-      store.setMessageAction('musicInfoFlagBit', flagBit);
+      store.setMessageAction('musicListInfoFlagBit', flagBit);
     },
     updateCurrentPlayMusicId(value) {
       // 歌曲高亮功能
@@ -203,7 +207,7 @@ const vm = {
 export default vm;
 </script>
 
-<style scpoed>
+<style scoped>
 .user-page-container  {
   display: flex;
   flex-direction: row;

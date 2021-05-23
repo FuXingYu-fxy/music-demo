@@ -12,7 +12,7 @@
     </div>
 
     <ul v-show="!isLoading">
-      <li v-for="(music, index) of musicList.songs" :key="music.id">
+      <li v-for="(music, index) of musicListInfo.songs" :key="music.id">
         <a
           :class="['music-name-link', music.id === currentPlayMusicId ? 'highlight' : '']"
           @click="selectMusic(music, index)"
@@ -62,23 +62,25 @@ const vm = {
   },
   data() {
     return {
-      musicList: [],
+      musicListInfo: [],
     };
   },
   components: {
     LoadingAnimation
   },
   methods: {
-    selectMusic(musicInfo, index) {
+    selectMusic(currentPlayMusicInfo, index) {
       // 为对象响应式添加index属性
       // index 播放模式(单曲循环、列表顺序)需要歌曲相对于歌单的index
       // debugger;
-      Vue.set(musicInfo, 'indexOfCurrentMusiclist', index);
-      Vue.set(musicInfo, 'musicList', this.musicList);
+      Vue.set(currentPlayMusicInfo, 'indexOfCurrentMusiclist', index);
+      console.log("______UserFavoriteMusic______");
+      console.log(currentPlayMusicInfo);
+      // Vue.set(musicInfo, 'musicListInfo', this.musicListInfo);
       // App.vue组件将musicInfo作为props传递给 MusicComponent.vue组件
-      this.$emit('update-music-info', musicInfo);
+      this.$emit('update-music-info', currentPlayMusicInfo, this.musicListInfo);
       // this.$root.$children[0].musicInfo = musicInfo;
-      this.$emit('update-current-play-music-id', musicInfo.id);
+      this.$emit('update-current-play-music-id', currentPlayMusicInfo.id);
     },
     getSongInfoBySongIds: utils.getSongInfoBySongIds,
 
@@ -87,7 +89,7 @@ const vm = {
     favoriteSongIds(newValue) {
       this.getSongInfoBySongIds(newValue)
         .then(value => {
-          this.musicList = value;
+          this.musicListInfo = value;
           // console.log(value);
           this.$emit("change-loading-status", false);
         });
@@ -96,8 +98,8 @@ const vm = {
     dailySongIds(newValue) {
       this.getSongInfoBySongIds(newValue)
         .then(value => {
-          this.musicList = value;
-          console.log(value);
+          this.musicListInfo = value;
+          // console.log(value);
           this.$emit("change-loading-status", false);
         });
     },

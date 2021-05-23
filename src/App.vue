@@ -14,8 +14,10 @@
     <router-view name="music-list"></router-view>
     <!-- 音乐播放条组件 -->
     <music-component
-      :music-info='sharedData.musicInfo'
-      :music-info-flag-bit="sharedData.musicInfoFlagBit"
+      :current-play-music-info='sharedData.currentPlayMusicInfo'
+      :music-list-info="sharedData.musicListInfo"
+      :music-list-info-flag-bit="sharedData.musicListInfoFlagBit"
+      :current-play-music-info-flag-bit="sharedData.currentPlayMusicInfoFlagBit"
       @update-current-play-music-id="updateCurrentPlayMusicId"
     />
   </div>

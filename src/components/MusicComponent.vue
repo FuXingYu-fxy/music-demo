@@ -60,19 +60,32 @@
 
 <script>
 import utils from "../js/utils";
+import musicList from '../js/data'
 
 export default {
   name: "MusicComponent",
   props: {
-    // musicInfo 是接口/song/detail?ids=1455767549 返回的单条歌曲详细信息
-    musicInfo: {
+    // currentPlayMusicInfo 是接口/song/detail?ids=1455767549 返回的单条歌曲详细信息
+    currentPlayMusicInfo: {
       type: Object,
       required: true,
       default() {
         return {};
       },
     },
-    musicInfoFlagBit: {
+    musicListInfo: {
+      type: Object,
+      required: true,
+      default() {
+        return {};
+      }
+    },
+    musicListInfoFlagBit: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    currentPlayMusicInfoFlagBit: {
       type: Number,
       required: true,
       default: 0
@@ -137,59 +150,48 @@ export default {
   },
   watch: {
     // 每次更改其他的歌曲这里都能监测到
-    // musicInfo来源是：App作为pros传递给子组件
-    musicInfoFlagBit() {
-      // FIXMED 监听一个对象开销很大,目的只是为了更新数据，设置一个标志位来代替这个对象, 标志位改变意味着对象改变
-      this.updateMusicMessage(this.musicInfo);
+    // musicListInfo 来源是：App作为pros传递给子组件
+    musicListInfoFlagBit() {
+      // FIXMED 监听一个对象开销很大,目的只是为了更新数据，设置一个标志位来代替这个对象, 标志位改变意味着musicListInfo对象改变
+      this.updateMusicMessage(this.currentPlayMusicInfo, this.musicListInfo);
     },
-    // musicInfo(newMusicInfo) {
-    //   this.updateMusicMessage(newMusicInfo);
-    // },
-    // 监听播放列表的变化
-    currentMusicList(value) {
-      // console.log(value);
+    currentPlayMusicInfoFlagBit() {
+      this.updateMusicMessage(this.currentPlayMusicInfo, {}, false);
     }
-    // $route(value) {
-    //   debugger;
-    //   console.log(value.matched[1].instances.default.musicList);
-    //   try {
-    //     this.currentMusicList = value.matched[1].instances.default.musicList;
-    //   } catch(e) {
-    //     console.log("歌单获取错误 musciComponent.vue row: 134");
-    //   }
-    // }
   },
   methods: {
-    updateMusicMessage(musicInfo, flag = true) {
+    updateMusicMessage(currentPlayMusicInfo, musicListInfo = {}, flag = true) {
       // debugger;
       // 歌曲名
-      this.songName = musicInfo.name;
+      this.songName = currentPlayMusicInfo.name;
       // 艺术家名 ar是个对象数组，先取出所有艺术家的名字，再用join用'/'连接起来
-      this.artist = musicInfo.ar.map((item) => item.name).join("/");
+      this.artist = currentPlayMusicInfo.ar.map((item) => item.name).join("/");
       // 持续时间
-      this.musicDuration_MS = musicInfo.dt;
-      this.musicDuration = utils.formatDuration(musicInfo.dt);
+      this.musicDuration_MS = currentPlayMusicInfo.dt;
+      this.musicDuration = utils.formatDuration(currentPlayMusicInfo.dt);
       // 歌曲封面
-      this.musicCoverUrl = musicInfo.al.picUrl;
+      this.musicCoverUrl = currentPlayMusicInfo.al.picUrl;
       //
-      this.audio.src = `https://music.163.com/song/media/outer/url?id=${musicInfo.id}.mp3`;
+      this.audio.src = `https://music.163.com/song/media/outer/url?id=${currentPlayMusicInfo.id}.mp3`;
 
+      // 更新播放列表
       if (flag) {
 
         // 设置索引
-        this.indexOfCurrentMusiclist = musicInfo.indexOfCurrentMusiclist;
+        this.indexOfCurrentMusiclist = currentPlayMusicInfo.indexOfCurrentMusiclist;
 
         // 设置当前播放的音乐列表
         // TODO musicList这里还有privileges字段，应该是对应版权信息，播放音质的字段
-        this.currentMusicList = musicInfo.musicList;
+        this.currentMusicList = musicListInfo;
 
         // 播放列表长度
-        this.musicListLength = musicInfo.musicList.songs.length;
+        this.musicListLength = musicListInfo.songs.length;
       }
     },
     setMusicSrc(index) {
-      let musicInfo = this.currentMusicList.songs[index];
-      this.updateMusicMessage(musicInfo, false);
+      // 根据索引从当音乐列表中取出对应歌曲项
+      let currentPlayMusicInfo = this.currentMusicList.songs[index];
+      this.updateMusicMessage(currentPlayMusicInfo, {},  false);
     },
     // toggle按钮对应的方法
     changePlayerStatus() {
@@ -207,8 +209,12 @@ export default {
     },
     // next按钮对应的方法
     next() {
+      // 更新索引
       this.indexOfCurrentMusiclist = (this.indexOfCurrentMusiclist + 1) % this.musicListLength;
+
       this.setMusicSrc(this.indexOfCurrentMusiclist);
+
+      // 更新当前播放音乐的id, 高亮功能会用到
       let musicId = this.currentMusicList.songs[this.indexOfCurrentMusiclist].id;
       this.$emit('update-current-play-music-id', musicId);
     },
@@ -224,7 +230,7 @@ export default {
 };
 </script>
 
-<style scpoed>
+<style scoped>
 .debugger-divtion {
   box-sizing: border-box;
   border: 1px solid greenyellow;

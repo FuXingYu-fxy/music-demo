@@ -62,7 +62,13 @@ export default {
       utils.getSongInfoBySongIds([musicId])
         .then(data => {
           if(data.code === 200) {
-            let musicInfo = data.songs[0].map(item => ({}))
+            // let musicInfo = data.songs[0].map(item => ({}));
+            console.log(`播放歌曲: ${data.songs[0].name}`);
+            store.setMessageAction("currentPlayMusicInfo", data.songs[0]);
+            // let flagBit = this.sharedData.musicListInfoFlagBit;
+            let flagBit = store.state.currentPlayMusicInfoFlagBit;
+            flagBit = (flagBit + 1) % 10;
+            store.setMessageAction('currentPlayMusicInfoFlagBit', flagBit);
           }
         })
     },
