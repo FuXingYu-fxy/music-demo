@@ -26,7 +26,7 @@ import utils from '../js/utils'
    },
    methods:{
      myEmit: utils.debounce(function(e) {
-       this.$emit("input", e.target.value)
+       this.$emit("input", e.target.value);
      }, 300, false)
 
    },

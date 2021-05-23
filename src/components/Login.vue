@@ -7,14 +7,30 @@
           <p>Sign In</p>
           <div class="user-input input-1">
             <label for="user-name">email</label>
-            <input type="text" id="user-name" autocomplete="off">
+            <input
+              type="text"
+              id="user-name"
+              autocomplete="off"
+              v-model="email"
+              @keyup.enter="signIn"
+            >
           </div>
 
           <div class="user-input input-2">
             <label for="user-password">password</label>
-            <input type="password"  id="user-password" autocomplete="off">
+            <input
+              type="password"
+              id="user-password"
+              autocomplete="off"
+              v-model="password"
+              @keyup.enter="signIn"
+            >
           </div>
-          <button id="sign-in">Sign In</button>
+          <button
+            id="sign-in"
+            @click="signIn"
+          >
+            Sign In</button>
         </div>
       </div>
     </div>
@@ -22,9 +38,49 @@
 </template>
 
 <script>
+import global from '../js/global'
 export default {
   name: "login",
-  props: ["hello"]
+  props: ["hello"],
+  data() {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    signIn() {
+      if(this.email === '' || this.password === '') {
+        window.alert("邮箱和密码不能为空");
+        return;
+      }
+      let body = {
+        email: this.email,
+        password: this.password,
+        timestamp: Date.now()
+      }
+      let url = `${global.server}/login`;
+      fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-type": "application/json"
+        }
+      }).then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.email = this.password = '';
+          if(data.code === 200) {
+            // 跳转路由
+            this.$router.go(-1);
+          } else {
+            window.alert(data.msg);
+          }
+        });
+    }
+  }
+
 }
 </script>
 

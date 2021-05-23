@@ -32,15 +32,16 @@
 
 <script>
 import utils from '../js/utils';
-import searchData from '../js/searchData';
 import Carousel from "./Carousel.vue";
 import RecommendMusic from "./RecommendMusic.vue";
 import Search from "./Search.vue";
+import store from '../js/store';
 
 export default {
   name: "",
   data() {
     return {
+      // 不需要共享store中的state
       value: "",
       searchResult: [],
       // 控制显示卡片
@@ -57,9 +58,20 @@ export default {
     playMusic(index) {
       // console.log("点击事件");
       this.isShow = false;
-      console.log(this.searchResult[index].artists);
+      let musicId = this.searchResult[index].id;
+      utils.getSongInfoBySongIds([musicId])
+        .then(data => {
+          if(data.code === 200) {
+            let musicInfo = data.songs[0].map(item => ({}))
+          }
+        })
     },
     requestSearchResult(e) {
+      if(e.length <= 1) {
+        this.isShow = false;
+        this.searchResult.length = 0;
+        return;
+      }
       console.log(`查询歌曲: ${e}`);
       utils.getSongInfoByKeywords([e])
         .then(res => {

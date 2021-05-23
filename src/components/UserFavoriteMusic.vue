@@ -88,7 +88,7 @@ const vm = {
       this.getSongInfoBySongIds(newValue)
         .then(value => {
           this.musicList = value;
-          console.log(value);
+          // console.log(value);
           this.$emit("change-loading-status", false);
         });
     },

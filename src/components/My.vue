@@ -46,7 +46,7 @@
         :current-play-music-id="getCurrentPlayMusicId"
         @update-current-play-music-id="updateCurrentPlayMusicId"
         :is-loading="loading"
-        @change-loading-status="loading = $event"
+        @change-loading-status="loading=$event"
       >
       </user-favorite-music>
     </div>

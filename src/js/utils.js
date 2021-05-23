@@ -17,7 +17,7 @@ function formatDuration(dt) {
 /**
  *
  * @param {Array} songIds 歌曲ID，必须是数组
- * @returns {Promise} 返回一个Promise，需使用then(value)接受
+ * @returns {Promise} 返回一个Promise，需使用then(value)接收
  */
 function getSongInfoBySongIds(songIds) {
   // 限制200首
