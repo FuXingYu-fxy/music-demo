@@ -74,8 +74,6 @@ const vm = {
       // index 播放模式(单曲循环、列表顺序)需要歌曲相对于歌单的index
       // debugger;
       Vue.set(currentPlayMusicInfo, 'indexOfCurrentMusiclist', index);
-      console.log("______UserFavoriteMusic______");
-      console.log(currentPlayMusicInfo);
       // Vue.set(musicInfo, 'musicListInfo', this.musicListInfo);
       // App.vue组件将musicInfo作为props传递给 MusicComponent.vue组件
       this.$emit('update-music-info', currentPlayMusicInfo, this.musicListInfo);

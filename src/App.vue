@@ -9,7 +9,10 @@
     </ul>
     <!-- </div> -->
     <!-- 渲染视图 -->
-    <router-view name="default"></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" name="default" :current-time="currentTime"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive" name="default"></router-view>
     <router-view name="describe"></router-view>
     <router-view name="music-list"></router-view>
     <!-- 音乐播放条组件 -->
@@ -19,6 +22,7 @@
       :music-list-info-flag-bit="sharedData.musicListInfoFlagBit"
       :current-play-music-info-flag-bit="sharedData.currentPlayMusicInfoFlagBit"
       @update-current-play-music-id="updateCurrentPlayMusicId"
+      @timeupdate="currentTime=$event"
     />
   </div>
 </template>
@@ -35,7 +39,9 @@ export default {
   data() {
     return {
       sharedData: store.state,
+      currentTime: 0
     }
+
   },
   computed: {
     // isNotAppHome() {

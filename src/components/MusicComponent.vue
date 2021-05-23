@@ -11,7 +11,7 @@
         href="javascript:"
         :class="audio.paused ? 'btn-play' : 'btn-pause'"
         @click="changePlayerStatus"
-        :title="audio.paused ? '播放' : '暂停'"
+        :title="audio.paused ? '[播放]' : '[暂停]'"
       ></a>
       <a href="javascript:"
          class="btn-next"
@@ -49,8 +49,11 @@
       <!-- 歌曲封面现在需要通过专辑内容接口获取 -->
 
       <a href="javascript:"
-         class="btn-play-mode"
-         title="[列表循环]"></a>
+         :class="audio.loop ? 'btn-play-mode-single-loop' : 'btn-play-mode-list-loop'"
+         :title="audio.loop ? '[单曲循环]': '[列表循环]'"
+         @click="changePlayerMode"
+      >
+      </a>
       <a href="javascript:" class="btn-like-this" title="[喜欢]"></a>
       <a href="javascript:" class="btn-download" title="[下载]"></a>
       <a href="javascript:" class="btn-comment" title="[评论]"></a>
@@ -93,7 +96,7 @@ export default {
   },
   data() {
     return {
-      isLoop: true,
+      isLoop: false,
       audio: {},
       // playerStatus: "播放",
       songName: " ",
@@ -141,11 +144,14 @@ export default {
     audio.addEventListener("timeupdate", () => {
       // 可以监测 currentTime的变化
       this.currentTime = audio.currentTime;
+      this.$emit("timeupdate", this.currentTime);
     });
 
     audio.addEventListener('ended', e => {
       // 音乐播放结束后将会触发该事件
-      this.next();
+      if(!this.audio.loop) {
+        this.next();
+      }
     })
   },
   watch: {
@@ -206,6 +212,9 @@ export default {
         this.audio.pause();
         // this.playerStatus = "播放";
       }
+    },
+    changePlayerMode() {
+      this.audio.loop = !this.audio.loop;
     },
     // next按钮对应的方法
     next() {
@@ -392,10 +401,12 @@ export default {
   background-image: url("/static/imgs/next.png");
 }
 
-.btn-play-mode {
+.btn-play-mode-list-loop {
   background-image: url("/static/imgs/loop.png");
 }
-
+.btn-play-mode-single-loop {
+  background-image: url("/static/imgs/single.png");
+}
 .btn-like-this {
   background-image: url("/static/imgs/unlike.png");
 }

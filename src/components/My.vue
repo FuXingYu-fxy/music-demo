@@ -7,11 +7,11 @@
         <!-- 用户头像 -->
         <div class="user-avatar-container">
           <a href="#"
-            style="display:block"
-            ><img
-              class="user-avatar"
-              :src="userInfo.profile.avatarUrl"
-              alt="用户头像"
+             style="display:block"
+          ><img
+            class="user-avatar"
+            :src="userInfo.profile.avatarUrl"
+            alt="用户头像"
           /></a>
         </div>
         <!-- 用户昵称 -->
@@ -26,11 +26,11 @@
         >
           <a class="playlist-link"
              @click="goToDetailsPlaylist(playList.id, playList.name)"
-            ><img
-              class="cover-img"
-              :src="playList.coverImgUrl"
-              alt="用户歌单图片"
-            />
+          ><img
+            class="cover-img"
+            :src="playList.coverImgUrl"
+            alt="用户歌单图片"
+          />
             <p class="playlist-title">{{ playList.name }}</p>
           </a>
         </div>
@@ -51,18 +51,27 @@
       </user-favorite-music>
     </div>
 
-<!--    歌词部分-->
-    <div class="lyrics-container">
-      <div>
-        <ul class="lyrics-section">
-          <li v-for="(line, index) of showLyrics" :key="index">
-            {{ line }}
-          </li>
-        </ul>
+    <!--    歌词部分-->
+      <div class="lyrics-container">
+        <div class="lyrics-section" :style="translate">
+          <span>
+            {{sharedData.currentPlayMusicInfo.name}}
+          </span>
+          <span v-for="i of 4">
+            ...
+          </span>
+        <span
+          class="lyrics"
+          :class="['lyrics-'+index, {highlight: index===lyricIndex}]"
+          v-for="(item, index) of resolvedLyrics"
+          :key="index"
+          :data-index="index"
+        >
+          {{ item.lyric }}</span>
+        </div>
       </div>
-    </div>
-<!--    <button @click="getLoginStatus">获取登录状态</button>-->
-<!--    <button @click="login">登录</button>-->
+    <!--    <button @click="getLoginStatus">获取登录状态</button>-->
+    <!--    <button @click="login">登录</button>-->
   </div>
 </template>
 
@@ -71,20 +80,38 @@ import {dailySongs, userInfo} from "../js/daily.js";
 import global from "../js/global.js";
 import UserFavoriteMusic from './UserFavoriteMusic'
 import store from '../js/store'
+import utils from '../js/utils'
 
 const vm = {
+  // inheritAttrs: false,
+  props: {
+    currentTime: {
+      type: Number,
+      required: true,
+    }
+  },
   name: "",
   data() {
     return {
       userInfo,
       userPlaylist: {},
       // TODO 更换为网络请求
-      dailySongIds:[], // '今日推荐' 歌曲id
+      dailySongIds: [], // '今日推荐' 歌曲id
       playlistTitle: '今日推荐',
       // favoriteSongIds: store.state // 用户喜爱歌单的歌曲id
       sharedData: store.state,
       // 歌曲列表加载状态
-      loading: false
+      loading: false,
+      // 未分词前的歌词，包含时间
+      lyrics: "",
+      // 歌词时间数组
+      resolvedLyrics: [],
+      // 全局索引
+      idx: 0,
+      // 判断高亮歌词的索引
+      lyricIndex: 0,
+      scrollHeight: 0,
+      height:0
     };
   },
   methods: {
@@ -120,55 +147,105 @@ const vm = {
         method: 'GET',
         credentials: 'include'
       })
-      .then(response => {
-        return response.json();
-      })
-      .then(result => {
-        // result 是 playlist json数据， 只有 result.playlist.trackIds才是完整的歌曲数据
-        let trackIds = result.playlist.trackIds.map(item => item.id);
-        // ******
-        store.setMessageAction('favoriteSongIds', trackIds);
-        // this.$nextTick(() => console.log(this.favoriteSongIds));
-        // BUG 如果是同一个playlistId 会报错
-        // *** 取消路由 ***
-        // this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
-        // this.$nextTick(() => this.loading = false);
+        .then(response => {
+          return response.json();
+        })
+        .then(result => {
+          // result 是 playlist json数据， 只有 result.playlist.trackIds才是完整的歌曲数据
+          let trackIds = result.playlist.trackIds.map(item => item.id);
+          // ******
+          store.setMessageAction('favoriteSongIds', trackIds);
+          // this.$nextTick(() => console.log(this.favoriteSongIds));
+          // BUG 如果是同一个playlistId 会报错
+          // *** 取消路由 ***
+          // this.$router.push(`/my/${playlistId}`, null, failure => {console.log(failure)});
+          // this.$nextTick(() => this.loading = false);
 
-        // 不能加在这里，因为UserFavoriteMusic组件里还有请求，应该加在那里面
-        // this.loading = false;
-      })
-      .catch(reason => {
-        alert('用户状态异常');
-      })
+          // 不能加在这里，因为UserFavoriteMusic组件里还有请求，应该加在那里面
+          // this.loading = false;
+        })
+        .catch(reason => {
+          alert('用户状态异常');
+        })
     },
     updateMusicInfo(currentPlayMusicInfo, musicListInfo) {
-      console.log("My.vue");
-      console.log(currentPlayMusicInfo);
-      // console.log(value);
       store.setMessageAction('currentPlayMusicInfo', currentPlayMusicInfo)
       store.setMessageAction('musicListInfo', musicListInfo);
       let flagBit = this.sharedData.musicListInfoFlagBit;
       flagBit = (flagBit + 1) % 10;
       store.setMessageAction('musicListInfoFlagBit', flagBit);
     },
-    updateCurrentPlayMusicId(value) {
+    getCurrentPlayMusicLyrics(songId) {
+      // 通过这个id获取歌词
+      utils.getSongLyricsBySongId(songId)
+        .then(data => {
+          if (data.code === 200) {
+            // console.log(data);
+            // 此时的歌词还未分组
+            // BUG 如果是纯音乐没有歌词
+            this.lyrics = data.lrc.lyric;
+            this.resolveLyricsData(this.lyrics);
+          }
+        })
+    },
+    updateCurrentPlayMusicId(songId) {
       // 歌曲高亮功能
-      store.setMessageAction("currentPlayMusicId", value);
-    }
+      store.setMessageAction("currentPlayMusicId", songId);
+    },
+    handlerLyric(time) {
+      if(this.idx > this.resolvedLyrics.length) return;
+
+      if(this.height === 0) {
+        this.height = document.querySelector(`span[data-index='${this.idx}']`).offsetHeight;
+      }
+      if(time >= this.resolvedLyrics[this.idx].time) {
+        // 当 currentTime 大于 歌词的时间时, 获取当前歌词绑定的data-index属性
+        // document.querySelector(`span[data-index=${this.idx}]`);
+        this.scrollHeight += this.height;
+        // document.querySelector(".lyrics-section").style.cssText = `transform: translateY(-${this.scrollHeight}px)`;
+        this.lyricIndex = this.idx++;
+      }
+    },
+    // 在请求歌词的回调函数里调用
+    resolveLyricsData(lyrics) {
+      // 时间数组
+      let times = lyrics.match(/\d{2}:\d{2}\.\d{2}/g);
+      times = times
+        .map(timestamp => timestamp.split(":").map(item => parseFloat(item)))
+        .map(([minute, seconde]) => minute * 60 + seconde);
+      // 分词后的歌词数组
+      let participleLyrics = lyrics.split(/\s*\n*\[.*?\]\s*/).filter((v) => !!v);
+
+      let resolvedLyrics = [];
+      for(let i = 0; i < times.length; i++) {
+        // 修改
+        resolvedLyrics.push({time: times[i], lyric: participleLyrics[i]});
+      }
+      this.resolvedLyrics = resolvedLyrics;
+    },
   },
   computed: {
-    showLyrics() {
-      // TODO 正则表达式提取歌词
-      // TODO 后期更改为网络请求歌词
-      let Lyrics =
-        "[00:11.87]Tell me that you need me now [00:16.54]'Cause in my dreams you're still around [00:21.69]You've been gone for quite some time [00:26.75]It finally feels like you're not mine [00:32.00]Will you remember me [00:34.85]'Cause I'll remember you [00:36.98]Yeah you [00:38.42]You went out and found somebody new [00:41.61]And that still hurts [00:44.08]It's taken everything inside my bones [00:47.42]To say these words [00:50.02]Even if it's not with me [00:53.45]I just want you to be happy [00:56.93]Woo woo [00:58.61]Just want you to be happy [01:01.96]Woo woo [01:05.32]I was torn and I was numb [01:10.02]I needed you but you needed anyone [01:15.27]I was bad but now I'm well [01:20.12]I had to lose you to find myself [01:25.47]Will you remember me [01:28.35]'Cause I'll remember you [01:30.38]Yeah you [01:31.89]You went out and found somebody new [01:35.09]And that still hurts [01:37.58]It's taken everything inside my bones [01:40.88]To say these words [01:43.50]Even if it's not with me [01:46.93]I just want you to be happy [01:49.08]Be happy [02:00.31]Woo woo woo woo woo woo woo [02:05.22]Woo woo woo woo woo woo woo [02:10.18]Nine months since I last saw you [02:12.98]And three months since we last spoke [02:15.73]Say happy birthday to you [02:18.55]Then I let you go [02:32.04]Tell me that you need me now [02:36.76]'Cause in my dreams you're still around [02:39.60]Around around around around around around around around ";
-      // Array
-      let splitedLyrics = Lyrics.split(/\s*\n*\[.*?\]\s*/).filter((v) => !!v);
-      return splitedLyrics;
-    },
     getCurrentPlayMusicId() {
       // console.log(this.sharedData.currentPlayMusicId);
       return this.sharedData.currentPlayMusicId;
+    },
+    translate() {
+      return {
+        transform: `translateY(-${this.scrollHeight}px)`
+      }
+    }
+  },
+  watch: {
+    getCurrentPlayMusicId(songId) {
+      console.log("获取新歌词");
+      // 获取新歌词的时候重置这些属性
+      this.idx = 0;
+      this.lyricIndex = 0;
+      this.scrollHeight = 0;
+      this.getCurrentPlayMusicLyrics(songId);
+    },
+    currentTime(time) {
+      this.handlerLyric(time);
     }
   },
   components: {
@@ -208,7 +285,7 @@ export default vm;
 </script>
 
 <style scoped>
-.user-page-container  {
+.user-page-container {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -230,9 +307,11 @@ export default vm;
   height: 75%;
   overflow: auto;
 }
+
 .user-page-container > div::-webkit-scrollbar {
   display: none;
 }
+
 /* 用户头像区域 */
 .user-info-areas {
   display: flex;
@@ -240,6 +319,7 @@ export default vm;
   width: 25%;
   position: inherit;
 }
+
 .user-info {
   display: flex;
   flex-direction: row;
@@ -249,12 +329,15 @@ export default vm;
   z-index: 1;
   background-color: cadetblue;
 }
+
 .nickname {
   margin-left: 1%;
 }
+
 .user-avatar-container {
   width: 20%;
 }
+
 .user-avatar {
   width: 100%;
   border-radius: 50%;
@@ -272,6 +355,7 @@ export default vm;
 .playlist {
   /* width: 5%; */
 }
+
 .playlist-link {
   display: block;
   position: relative;
@@ -279,6 +363,7 @@ export default vm;
   width: 100%;
   height: 100%;
 }
+
 .playlist-title {
   /* 歌单的描述性文字 */
   position: absolute;
@@ -296,9 +381,11 @@ export default vm;
   background-color: #4a4a4a78;
   font-size: .5rem;
 }
+
 .playlist-link:hover > .playlist-title {
   height: 0;
 }
+
 .cover-img {
   width: 100%;
   height: 100%;
@@ -308,11 +395,13 @@ export default vm;
 .user-recommended-today {
   width: 25%;
 }
+
 .today-music {
   width: 100%;
   /* 今日推荐会根据这个来定位 */
   position: relative;
 }
+
 .today-recommended-text {
   margin: 0;
   position: sticky;
@@ -325,23 +414,35 @@ export default vm;
   box-sizing: border-box;
   border: 1px solid red;
 }
+
 .user-recommended-today {
   box-sizing: border-box;
   border: 1px solid gold;
 }
 
 .lyrics-container {
-  border: 1px solid greenyellow;
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
 }
+
 /* =====================调试的边框====================== */
 
 .lyrics-section {
-  text-align: center;
-  padding: 0;
-}
-.lyrics-section li{
-  list-style: none;
+  /*text-align: center;*/
+  width: 375px;
+  display: flex;
+  flex-direction: column;
+  transition: .2s;
+  justify-content: center;
+  align-items: center;
 }
 
+.lyrics {
+  margin: 10px 0;
+}
+
+/*==================歌词高亮==================*/
+.highlight {
+  color: chartreuse;
+  transform: scale(1.2);
+}
 </style>

@@ -35,6 +35,22 @@ function getSongInfoBySongIds(songIds) {
     .catch(reason => alert(reason));
 }
 
+/**
+ * 返回歌词信息，需要用 .then(value) 接收歌词
+ * @param {Number} songId
+ * @return {Promise<any | void>}
+ */
+function getSongLyricsBySongId(songId) {
+  // /lyric
+  let url = `${global.server}/lyric?id=${songId}`;
+  return fetch(url, {
+    method: "GET",
+    credentials: "include"
+  })
+    .then(response => response.json())
+    .catch(reason => alert(reason));
+}
+
 function getSongInfoByKeywords(keywords) {
   let url = `${global.server}/search?keywords=${keywords.join(",")}`;
   // debugger;
@@ -116,4 +132,5 @@ export default {
   debounce,
   getSongInfoByKeywords,
   isLogined,
+  getSongLyricsBySongId,
 }
