@@ -409,15 +409,12 @@ export default vm;
   color: white;
 }
 
-/* =====================调试的边框====================== */
 .user-info-areas {
   box-sizing: border-box;
-  border: 1px solid red;
 }
 
 .user-recommended-today {
   box-sizing: border-box;
-  border: 1px solid gold;
 }
 
 .lyrics-container {

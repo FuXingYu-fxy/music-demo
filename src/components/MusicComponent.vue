@@ -32,7 +32,7 @@
           <span class="music-duration">{{ musicDuration }}</span>
         </div>
 
-        <div class="music-progress-bar debugger-divtion">
+        <div class="music-progress-bar ">
           <!-- 总进度条 -->
           <div class="player-progress-inner">
             <!-- TODO 如果有需要可以在这里加一个指示加载成功的进度条 .player-progress-load -->

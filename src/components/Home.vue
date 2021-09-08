@@ -12,6 +12,7 @@
           <a
             class="item"
             v-for="(item, index) of searchResult"
+            :key="index"
             @click="playMusic(index)"
           >{{ item.musicName }}/{{ item.artists }}</a>
         </div>
@@ -64,11 +65,11 @@ export default {
           if(data.code === 200) {
             // let musicInfo = data.songs[0].map(item => ({}));
             console.log(`播放歌曲: ${data.songs[0].name}`);
-            store.setMessageAction("currentPlayMusicInfo", data.songs[0]);
-            store.setMessageAction("currentPlayMusicId", data.songs[0].id);
             // let flagBit = this.sharedData.musicListInfoFlagBit;
             let flagBit = store.state.currentPlayMusicInfoFlagBit;
             flagBit = (flagBit + 1) % 10;
+            store.setMessageAction("currentPlayMusicInfo", data.songs[0]);
+            store.setMessageAction("currentPlayMusicId", data.songs[0].id);
             store.setMessageAction('currentPlayMusicInfoFlagBit', flagBit);
           }
         })
@@ -136,6 +137,7 @@ export default {
 
 /*搜索栏歌曲卡片的样式*/
 .musicCard {
+  z-index: 8;
   position: absolute;
   background-color: aliceblue;
   left: 5%;

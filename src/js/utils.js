@@ -102,16 +102,16 @@ function debounce(func, wait = 300, immediate = true) {
 
 async function isLogined() {
   let url = `${global.server}/login/status`;
-  let ret = await fetch(url, {
+  return await fetch(url, {
     method: "GET",
     credentials: "include"
   }).then(response => response.json())
     .then(res => {
-      if(res.data.code !== 200) {
+      if (res.data.code !== 200) {
         console.log(`服务器返回状态码异常: code: ${res.data.code}`);
         return false;
       }
-      if(!(res.data.account)) {
+      if (!(res.data.account)) {
         // debugger;
         console.log('未登录');
         return false;
@@ -123,7 +123,6 @@ async function isLogined() {
       alert.log(reason);
       return false;
     });
-  return ret;
 }
 
 export default {

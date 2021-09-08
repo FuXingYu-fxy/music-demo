@@ -10,7 +10,7 @@
         <tr v-for="(song, index) of musicList.songs" :key="song.id">
           <!-- TODO 用nth:child(odd)给表格间隔换色 -->
           <td>{{ index + 1 }}</td>
-          <td>no operating</td>
+          <td>无操作</td>
           <!-- TODO 给音乐加上别名, 对应字段 song.alai -->
           <td>
             <a class="music-name" @click="selectMusic(song)">{{
@@ -40,6 +40,7 @@
 <script>
 import musicList from "../js/data";
 import utils from '../js/utils';
+import store from '../js/store'
 // import MusicComponent from "./MusicComponent";
 const vm = {
   name: "",
@@ -64,20 +65,26 @@ const vm = {
   // mounted() {
   //   console.log(this.$route.query);
   // }
-  beforeRouteEnter(to, from, next) {
-    let id = to.query.playlistId;
-    // FIXME 后期更改为网络请求
-    // vm是组件实例， 因为无法获取this, 通过回调执行
-    next((vm) => {
-      // 给data赋值
-      // console.log(vm.musicList);
-      console.log("object");
-    });
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   let id = to.query.playlistId;
+  //   // FIXME 后期更改为网络请求
+  //   // vm是组件实例， 因为无法获取this, 通过回调执行
+  //   next((vm) => {
+  //     // 给data赋值
+  //     // console.log(vm.musicList);
+  //     console.log("object");
+  //   });
+  // },
   methods: {
 
     selectMusic(musicInfo) {
-      this.$root.$children[0].musicInfo = musicInfo;
+      // this.$root.$children[0].musicInfo = musicInfo;
+      let flagBit = store.state.currentPlayMusicInfoFlagBit;
+      flagBit = (flagBit + 1) % 10;
+
+      store.setMessageAction("currentPlayMusicInfo", musicInfo);
+      store.setMessageAction("currentPlayMusicId", musicInfo.id);
+      store.setMessageAction('currentPlayMusicInfoFlagBit', flagBit);
     },
     formatDate(timestamp) {
       return new Date(timestamp).toISOString().slice(0, 10);
