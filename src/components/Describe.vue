@@ -10,7 +10,7 @@
       那些曾经叩击我们心灵的声音，会时常穿越时空，在我们耳畔深情地响起
     </p>
     <p class="button-container" ref="btns">
-      <a href="#">GitHub</a>
+      <a href="https://github.com/fuxingyu-fxy">GitHub</a>
       <a @click="goHome">Get Started</a>
     </p>
   </div>

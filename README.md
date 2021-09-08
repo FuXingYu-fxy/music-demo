@@ -1,5 +1,6 @@
 # 本来是想删掉这个的，因为 music-vue 是对该demo的重写， 但做这个毕竟当初耗费了我很多时间,没有用任何组件库，纯手写样式+布局 感觉删了有点可惜, 最后还是决定留下, 成长以后再来看这个应该有很多感触吧 :smile:, 就跟我现在看我大一做的网页一样。​
 
+> 后端接口为 `NeteaseCloudMusicApi` 项目地址: https://github.com/Binaryify/NeteaseCloudMusicApi
 # 项目截图
 
 我称它为`负一页`, 有个小动画, 文字会从两侧缓慢飞入, 然后按钮淡入
